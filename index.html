@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a4d9e">
+<title>Encerrante ARLA</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{--verde:#0a4d9e;--verde2:#ee8600;--laranja:#ee8600;--fundo:#f4f6f8;--card:#fff;--txt:#1d2329;--sub:#5d6873;--borda:#d9dee3;--ok:#13804a;--okbg:#e5f5ec;--warn:#9a5b00;--warnbg:#fff3dc;--err:#b42318;--errbg:#fdeceb}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--fundo);color:var(--txt);font-size:16px}
+header{background:var(--verde);color:#fff;padding:10px 16px;display:flex;align-items:center;gap:10px;border-bottom:4px solid var(--laranja)}
+header img{width:36px;height:36px;border-radius:8px}
+header small{display:block;font-size:11.5px;font-weight:500;opacity:.85;letter-spacing:.3px}
+header h1{font-size:18px;margin:0;flex:1;white-space:nowrap;line-height:1.15}
+.topo{position:sticky;top:0;z-index:5}
+.selo{font-size:12px;padding:4px 9px;border-radius:99px;background:rgba(255,255,255,.18);white-space:nowrap}
+.selo.off{background:#ffb020;color:#3a2600}
+nav{display:flex;background:#fff;border-bottom:1px solid var(--borda)}
+nav button{flex:1;border:0;background:none;padding:12px 4px;font-size:15px;color:var(--sub);border-bottom:3px solid transparent}
+nav button.ativo{color:var(--verde);border-color:var(--laranja);font-weight:700}
+main{max-width:640px;margin:0 auto;padding:16px 16px 120px}
+.card{background:var(--card);border:1px solid var(--borda);border-radius:12px;padding:14px;margin-bottom:14px}
+.card h2{font-size:16px;margin:0 0 10px}
+label{display:block;font-size:13px;color:var(--sub);margin:10px 0 4px;font-weight:600}
+input[type=text],input[type=date],input[type=password],input[inputmode],select,textarea{width:100%;font-size:17px;padding:11px 12px;border:1px solid var(--borda);border-radius:9px;background:#fff;color:var(--txt)}
+textarea{min-height:60px;font-size:15px}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--verde2);border-color:transparent}
+.linha{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.turnos{display:flex;gap:8px;flex-wrap:wrap}
+.turnos button{flex:1;min-width:64px;padding:12px 6px;border:1px solid var(--borda);background:#fff;border-radius:9px;font-size:16px}
+.turnos button.ativo{background:var(--laranja);color:#fff;border-color:var(--laranja);font-weight:700}
+.bico-tit{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.bico-tit b{font-size:18px}
+.bico-tit span{font-size:13px;color:var(--sub)}
+.dica{font-size:12.5px;color:var(--sub);margin-top:4px}
+.previa{font-size:12.5px;color:var(--sub);margin-top:3px;min-height:15px}
+.res{margin-top:10px;padding:9px 11px;border-radius:9px;font-size:14px;background:#eef1f4}
+.res.ok{background:var(--okbg);color:var(--ok)}.res.warn{background:var(--warnbg);color:var(--warn)}.res.err{background:var(--errbg);color:var(--err)}
+.foto{display:flex;align-items:center;gap:10px;margin-top:6px;flex-wrap:wrap}
+.foto label.btn{margin:0}
+.foto img{width:64px;height:64px;object-fit:cover;border-radius:8px;border:1px solid var(--borda)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:12px 16px;border-radius:10px;border:1px solid var(--verde);background:#fff;color:var(--verde);font-size:15px;font-weight:600;cursor:pointer}
+.btn.pri{background:var(--laranja);border-color:var(--laranja);color:#fff;width:100%;font-size:17px;padding:15px}
+.btn:disabled{opacity:.5}
+.chk{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:14px;color:var(--txt);font-weight:400}
+.chk input{width:20px;height:20px}
+.rodape{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--borda);padding:10px 16px calc(10px + env(safe-area-inset-bottom))}
+.rodape .in{max-width:640px;margin:0 auto}
+.item{border-left:4px solid var(--borda);padding:8px 10px;margin:8px 0;background:#fafbfc;border-radius:6px;font-size:14px}
+.item.enviado{border-color:var(--ok)}.item.pendente{border-color:#ffb020}.item.recusado{border-color:var(--err)}
+.item small{color:var(--sub)}
+.aviso{padding:10px 12px;border-radius:9px;background:var(--warnbg);color:var(--warn);font-size:14px;margin-bottom:12px}
+.toast{position:fixed;left:16px;right:16px;bottom:90px;max-width:600px;margin:0 auto;background:#1d2329;color:#fff;padding:12px 14px;border-radius:10px;font-size:15px;z-index:20;display:none}
+.oculto{display:none!important}
+.req::after{content:" *";color:var(--err)}
+.hero{position:relative;height:150px;border-radius:14px;overflow:hidden;margin-bottom:14px;background:#0a4d9e url(posto.jpg) center/cover}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,77,158,.05) 20%,rgba(10,40,90,.85))}
+.hero div{position:absolute;left:14px;right:14px;bottom:12px;color:#fff;z-index:1}
+.hero b{display:block;font-size:22px}.hero span{font-size:13px;opacity:.9}
+.etapa{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--laranja);color:#fff;font-size:14px;font-weight:700;margin-right:8px;flex:none}
+.card h2{display:flex;align-items:center}
+.card.bico{border-left:5px solid var(--verde)}
+.logo-sobre{width:160px;display:block;margin:0 auto 10px}
+</style>
+</head>
+<body>
+<div class="topo"><header><img src="logo-icone.png" alt=""><h1>Encerrante ARLA<small>POSTOS PICHILAU</small></h1><span id="selo" class="selo">…</span></header>
+<nav>
+  <button data-tela="registro" class="ativo">Registrar</button>
+  <button data-tela="envios">Envios <span id="qtdPend"></span></button>
+  <button data-tela="aparelho">Aparelho</button>
+</nav></div>
+<main>
+  <!-- ================= REGISTRO ================= -->
+  <section id="tela-registro">
+    <div id="avisoConfig" class="aviso oculto">Configure o posto e o seu nome na aba <b>Aparelho</b> antes de registrar.</div>
+    <div class="hero"><div><b id="tituloPosto">Posto</b><span id="subHero">Registro de encerrantes de ARLA</span></div></div>
+    <div class="card">
+      <h2><span class="etapa">1</span>Identificação</h2>
+      <div class="linha">
+        <div><label class="req" for="data">Data</label><input type="date" id="data"></div>
+        <div><label for="lider" class="req">Líder</label><input type="text" id="lider" autocomplete="name"></div>
+      </div>
+      <label class="req">Horário do encerrante (troca de turno)</label>
+      <div class="turnos" id="turnos"></div>
+    </div>
+
+    <div class="card">
+      <h2><span class="etapa">2</span>Foto da fita dos encerrantes (B2Click)</h2>
+      <div class="foto">
+        <label class="btn">📷 Tirar foto<input type="file" accept="image/*" capture="environment" id="fotoFita" hidden></label>
+        <div id="prevFita" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+      </div>
+      <div class="dica">Obrigatória. Pode tirar mais de uma se a fita for longa.</div>
+    </div>
+
+    <div class="card" style="padding:10px 14px"><h2 style="margin:0"><span class="etapa">3</span>Encerrantes por bico</h2></div>
+    <div id="bicos"></div>
+
+    <div class="card">
+      <h2><span class="etapa">4</span>Observações e anexos</h2>
+      <label for="obsGeral">Observação</label>
+      <textarea id="obsGeral" placeholder="Opcional: ocorrências do turno, motivo de diferença, manutenção, comanda sem bico…"></textarea>
+      <label>Anexar imagens (opcional)</label>
+      <div class="foto">
+        <label class="btn">📎 Anexar imagem<input type="file" accept="image/*" multiple id="anexos" hidden></label>
+        <div id="prevAnexos" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+      </div>
+      <div class="dica">Comanda, cupom, print, foto de defeito etc. Pode escolher da galeria. Toque na miniatura para remover.</div>
+    </div>
+  </section>
+
+  <!-- ================= ENVIOS ================= -->
+  <section id="tela-envios" class="oculto">
+    <div class="card">
+      <h2>Fila de envio</h2>
+      <div class="dica">Sem sinal, os registros ficam guardados neste aparelho e são enviados sozinhos quando a internet voltar. Não desinstale o app nem limpe os dados do navegador com itens pendentes.</div>
+      <div style="margin-top:10px"><button class="btn" id="btnSync">↻ Enviar agora</button></div>
+      <div id="lista"></div>
+    </div>
+  </section>
+
+  <!-- ================= APARELHO ================= -->
+  <section id="tela-aparelho" class="oculto">
+    <div class="card">
+      <h2>Configuração deste aparelho</h2>
+      <label class="req" for="cfgPosto">Posto</label>
+      <select id="cfgPosto"></select>
+      <label class="req" for="cfgLider">Seu nome (líder)</label>
+      <input type="text" id="cfgLider" autocomplete="name">
+      <label for="cfgPin">PIN do posto</label>
+      <input type="password" id="cfgPin" inputmode="numeric" autocomplete="off">
+      <div class="dica">O PIN é informado pela auditoria/gerência.</div>
+      <div style="margin-top:14px"><button class="btn pri" id="btnSalvarCfg">Salvar</button></div>
+    </div>
+    <div class="card">
+      <img class="logo-sobre" src="logo-pichilau.jpg" alt="Postos Pichilau">
+      <h2>Sobre</h2>
+      <div class="dica" id="sobre"></div>
+      <div style="margin-top:10px"><button class="btn" id="btnAtualizarCfg">↻ Atualizar postos e bicos</button></div>
+    </div>
+  </section>
+</main>
+
+<div class="rodape" id="rodape"><div class="in"><button class="btn pri" id="btnSalvar">Salvar registro</button></div></div>
+<div class="toast" id="toast"></div>
+
+<script src="config.js"></script>
+<script src="sync.js"></script>
+<script>
+(function(){
+'use strict';
+const C = self.APP_CONFIG;
+const $ = s => document.querySelector(s);
+const ls = {
+  get(k, d){ try{ const v = localStorage.getItem('enc_'+k); return v==null ? d : JSON.parse(v); }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem('enc_'+k, JSON.stringify(v)); }catch(e){} }
+};
+
+// ---------- números pt-BR ----------
+function num(s){
+  if(s==null) return NaN;
+  s = String(s).trim().replace(/\s/g,'').replace(/[Ll]$/,'');
+  if(!s) return NaN;
+  if(s.indexOf(',')>=0){ s = s.replace(/\./g,'').replace(',', '.'); }
+  else { const p = s.split('.'); if(p.length>2 || (p.length===2 && p[1].length===3)) s = p.join(''); }
+  return /^-?\d+(\.\d+)?$/.test(s) ? parseFloat(s) : NaN;
+}
+const fmt = (n, c=2) => isFinite(n) ? n.toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:c}) : '—';
+const sinal = n => (n>0?'+':'') + fmt(n);
+const hoje = () => { const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); };
+const uid = () => (self.crypto && crypto.randomUUID) ? crypto.randomUUID() : 'id-'+Date.now()+'-'+Math.random().toString(16).slice(2);
+function toast(m, ms){ const t=$('#toast'); t.textContent=m; t.style.display='block'; clearTimeout(toast._t); toast._t=setTimeout(()=>t.style.display='none', ms||3500); }
+
+// ---------- configuração (postos/bicos) ----------
+let cfgServidor = ls.get('cfgServidor', null);
+function postos(){ return (cfgServidor && cfgServidor.postos && cfgServidor.postos.length) ? cfgServidor.postos : C.POSTOS_PADRAO; }
+function turnos(){ return (cfgServidor && cfgServidor.turnos && cfgServidor.turnos.length) ? cfgServidor.turnos : C.TURNOS_PADRAO; }
+function ultimas(posto){ const u = cfgServidor && cfgServidor.ultimas && cfgServidor.ultimas[posto]; const loc = ls.get('ultimasLocal',{})[posto]||{}; const out = Object.assign({}, u||{}); Object.keys(loc).forEach(b=>{ if(!out[b] || (loc[b].chave > out[b].chave)) out[b]=loc[b]; }); return out; }
+async function baixarConfig(avisar){
+  if(!navigator.onLine || !C.API_URL || C.API_URL.indexOf('http')!==0) { if(avisar) toast('Sem conexão ou servidor não configurado.'); return; }
+  try{
+    const r = await fetch(C.API_URL+'?action=config', {redirect:'follow'});
+    const j = await r.json();
+    if(j.ok){ cfgServidor = j; ls.set('cfgServidor', j); montarPostos(); montarFormulario(); if(avisar) toast('Postos e bicos atualizados.'); }
+  }catch(e){ if(avisar) toast('Não foi possível atualizar agora.'); }
+}
+
+// ---------- aparelho ----------
+let aparelho = ls.get('aparelho', {posto:'', lider:'', pin:''});
+function montarPostos(){
+  const s = $('#cfgPosto'); s.innerHTML = '<option value="">Selecione…</option>' + postos().map(p=>`<option>${esc(p.posto)}</option>`).join('');
+  s.value = aparelho.posto || '';
+}
+function esc(t){ return String(t==null?'':t).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+$('#btnSalvarCfg').onclick = () => {
+  const p = $('#cfgPosto').value, l = $('#cfgLider').value.trim();
+  if(!p || !l){ toast('Informe o posto e o seu nome.'); return; }
+  aparelho = {posto:p, lider:l, pin:$('#cfgPin').value.trim()}; ls.set('aparelho', aparelho);
+  montarFormulario(); trocarTela('registro'); toast('Aparelho configurado para '+p+'.');
+};
+$('#btnAtualizarCfg').onclick = () => baixarConfig(true);
+
+// ---------- formulário ----------
+let turnoSel = '', fotosFita = [], anexos = [], estadoBicos = {};
+function montarFormulario(){
+  const ok = !!aparelho.posto;
+  $('#avisoConfig').classList.toggle('oculto', ok);
+  $('#tituloPosto').textContent = ok ? 'Pichilau ' + aparelho.posto : 'Posto não configurado';
+  $('#subHero').textContent = ok ? 'Encerrantes de ARLA · líder ' + (aparelho.lider||'') : 'Configure na aba Aparelho';
+  if(!$('#lider').value) $('#lider').value = aparelho.lider || '';
+  if(!$('#data').value) $('#data').value = hoje();
+  $('#turnos').innerHTML = turnos().map(t=>`<button type="button" data-t="${esc(t)}" class="${t===turnoSel?'ativo':''}">${esc(t)}</button>`).join('');
+  const p = postos().find(x=>x.posto===aparelho.posto);
+  const ult = ultimas(aparelho.posto);
+  $('#bicos').innerHTML = !p ? '' : p.bicos.map(b=>{
+    const u = ult[b.n];
+    const ant = u ? `Último registro (${esc(u.quando)}): Relógio ${fmt(u.relogio)} · Fita ${fmt(u.fita)}` : 'Sem registro anterior neste aparelho.';
+    return `<div class="card bico" data-bico="${esc(b.n)}">
+      <div class="bico-tit"><b>Bico ${esc(b.n)}</b><span>${esc(b.d||'')}</span></div>
+      <div class="dica">${ant}</div>
+      <div class="linha">
+        <div><label class="req">Encerrante do relógio (medidor)</label><input inputmode="decimal" data-c="relogio" placeholder="ex.: 140021"><div class="previa" data-p="relogio"></div></div>
+        <div><label class="req">Encerrante da fita (B2Click)</label><input inputmode="decimal" data-c="fita" placeholder="ex.: 140437"><div class="previa" data-p="fita"></div></div>
+      </div>
+      <label class="chk"><input type="checkbox" data-c="ilegivel"> Relógio ilegível / sem leitura</label>
+      <div class="res" data-r>Preencha relógio e fita para calcular a sobra/falta.</div>
+      <label class="req">Foto do medidor</label>
+      <div class="foto"><label class="btn">📷 Tirar foto<input type="file" accept="image/*" capture="environment" data-c="foto" hidden></label><span data-f></span></div>
+      <label>Observação do bico</label>
+      <textarea data-c="obs" placeholder="Opcional"></textarea>
+    </div>`;
+  }).join('');
+  // restaura o que já foi digitado (rascunho)
+  Object.keys(estadoBicos).forEach(n=>{ const el = document.querySelector(`[data-bico="${CSS.escape(n)}"]`); if(!el) return; const s=estadoBicos[n];
+    el.querySelector('[data-c=relogio]').value = s.relogio||''; el.querySelector('[data-c=fita]').value = s.fita||''; el.querySelector('[data-c=ilegivel]').checked = !!s.ilegivel; el.querySelector('[data-c=obs]').value = s.obs||'';
+    if(s.foto) el.querySelector('[data-f]').innerHTML = `<img src="${s.foto}">`; calcular(el); });
+}
+$('#turnos').addEventListener('click', e=>{ const b=e.target.closest('button'); if(!b) return; turnoSel=b.dataset.t; [...$('#turnos').children].forEach(x=>x.classList.toggle('ativo', x===b)); });
+
+function estado(n){ return estadoBicos[n] || (estadoBicos[n]={}); }
+function calcular(card){
+  const n = card.dataset.bico, s = estado(n), r = card.querySelector('[data-r]');
+  const rel = num(s.relogio), fit = num(s.fita);
+  card.querySelector('[data-p=relogio]').textContent = s.relogio ? (isFinite(rel) ? '= '+fmt(rel,3)+' L' : 'Número inválido') : '';
+  card.querySelector('[data-p=fita]').textContent = s.fita ? (isFinite(fit) ? '= '+fmt(fit,3)+' L' : 'Número inválido') : '';
+  const u = ultimas(aparelho.posto)[n];
+  let cls='res', msg='';
+  if(s.ilegivel){ cls+=' warn'; msg = isFinite(fit) ? 'Relógio ilegível — será registrado como pendência para a auditoria.' : 'Informe ao menos a fita.'; }
+  else if(isFinite(rel) && isFinite(fit)){
+    const dif = fit - rel;
+    msg = `Sobra/falta acumulada (fita − relógio): <b>${sinal(dif)} L</b>`;
+    if(u && isFinite(u.relogio) && isFinite(u.fita)){
+      const dr = rel - u.relogio, df = fit - u.fita, dp = df - dr;
+      msg += `<br>Desde o último registro: relógio ${sinal(dr)} L · fita ${sinal(df)} L → diferença do período <b>${sinal(dp)} L</b>`;
+      const tol = (cfgServidor && cfgServidor.tolerancia) || 5;
+      if(dr < 0 || df < 0){ cls+=' err'; msg += '<br>⚠ Encerrante menor que o anterior. Confira a digitação — se estiver certo, pode salvar normalmente.'; }
+      else if(Math.abs(dp) > tol){ cls+=' warn'; msg += `<br>⚠ Diferença acima de ${fmt(tol)} L em relação ao registro anterior. Pode salvar normalmente; se souber o motivo, escreva na observação.`; }
+      else cls+=' ok';
+    } else cls += Math.abs(dif) > 0 ? '' : ' ok';
+  } else msg = 'Preencha relógio e fita para calcular a sobra/falta.';
+  r.className = cls; r.innerHTML = msg;
+}
+$('#bicos').addEventListener('input', e=>{
+  const card = e.target.closest('[data-bico]'); if(!card) return; const c = e.target.dataset.c; if(!c || c==='foto') return;
+  estado(card.dataset.bico)[c] = e.target.type==='checkbox' ? e.target.checked : e.target.value; salvarRascunho(); calcular(card);
+});
+$('#bicos').addEventListener('change', async e=>{
+  if(e.target.dataset.c!=='foto') return; const card = e.target.closest('[data-bico]'); const f = e.target.files[0]; if(!f) return;
+  const n = card.dataset.bico; card.querySelector('[data-f]').textContent = 'processando…';
+  try{
+    const img = await prepararFoto(f, `${aparelho.posto} • Bico ${n} • ${dataBR($('#data').value)} ${turnoSel||''}`);
+    estado(n).foto = img.dataUrl; estado(n).fotoHora = img.hora; card.querySelector('[data-f]').innerHTML = `<img src="${img.dataUrl}">`; salvarRascunho();
+  }catch(err){ card.querySelector('[data-f]').textContent = 'erro na foto, tente de novo'; }
+  e.target.value='';
+});
+$('#fotoFita').addEventListener('change', async e=>{
+  const f = e.target.files[0]; if(!f) return;
+  try{ const img = await prepararFoto(f, `${aparelho.posto} • Fita B2Click • ${dataBR($('#data').value)} ${turnoSel||''}`); fotosFita.push(img); mostrarFita(); salvarRascunho(); }catch(err){ toast('Erro na foto, tente de novo.'); }
+  e.target.value='';
+});
+$('#anexos').addEventListener('change', async e=>{
+  for(const f of [...e.target.files].slice(0,6)){ try{ anexos.push(await prepararFoto(f, `${aparelho.posto} • Anexo • ${dataBR($('#data').value)} ${turnoSel||''}`)); }catch(err){ toast('Não foi possível ler uma das imagens.'); } }
+  mostrarAnexos(); salvarRascunho(); e.target.value='';
+});
+function mostrarAnexos(){ $('#prevAnexos').innerHTML = anexos.map((f,i)=>`<img src="${f.dataUrl}" data-i="${i}" title="Toque para remover">`).join(''); }
+$('#prevAnexos').addEventListener('click', e=>{ const i=e.target.dataset.i; if(i==null) return; if(confirm('Remover este anexo?')){ anexos.splice(+i,1); mostrarAnexos(); salvarRascunho(); } });
+function mostrarFita(){ $('#prevFita').innerHTML = fotosFita.map((f,i)=>`<img src="${f.dataUrl}" data-i="${i}" title="Toque para remover">`).join(''); }
+$('#prevFita').addEventListener('click', e=>{ const i=e.target.dataset.i; if(i==null) return; if(confirm('Remover esta foto?')){ fotosFita.splice(+i,1); mostrarFita(); salvarRascunho(); } });
+const dataBR = iso => iso ? iso.split('-').reverse().join('/') : '';
+
+// reduz a foto (envio rápido com sinal fraco) e carimba posto/bico/data
+function prepararFoto(file, carimbo){
+  return new Promise((res, rej)=>{
+    const url = URL.createObjectURL(file), im = new Image();
+    im.onload = () => {
+      const max = 1400, k = Math.min(1, max/Math.max(im.width, im.height));
+      const w = Math.round(im.width*k), h = Math.round(im.height*k);
+      const cv = document.createElement('canvas'); cv.width=w; cv.height=h; const cx = cv.getContext('2d');
+      cx.drawImage(im,0,0,w,h);
+      const agora = new Date(), txt = carimbo + ' • foto ' + agora.toLocaleString('pt-BR');
+      const fs = Math.max(14, Math.round(w/40)); cx.font = `bold ${fs}px sans-serif`;
+      cx.fillStyle='rgba(0,0,0,.6)'; cx.fillRect(0,h-fs*1.8,w,fs*1.8); cx.fillStyle='#fff'; cx.fillText(txt, fs*.5, h-fs*.6, w-fs);
+      URL.revokeObjectURL(url);
+      res({ dataUrl: cv.toDataURL('image/jpeg', .72), hora: new Date(file.lastModified||Date.now()).toISOString() });
+    };
+    im.onerror = () => { URL.revokeObjectURL(url); rej(new Error('img')); };
+    im.src = url;
+  });
+}
+
+// rascunho: se o app fechar no meio, nada se perde
+function salvarRascunho(){ ls.set('rascunho', {posto:aparelho.posto, data:$('#data').value, turno:turnoSel, lider:$('#lider').value, obs:$('#obsGeral').value, bicos:estadoBicos, fotosFita, anexos}); }
+function carregarRascunho(){ const r = ls.get('rascunho', null); if(!r || r.posto!==aparelho.posto) return; $('#data').value=r.data||hoje(); turnoSel=r.turno||''; $('#lider').value=r.lider||aparelho.lider; $('#obsGeral').value=r.obs||''; estadoBicos=r.bicos||{}; fotosFita=r.fotosFita||[]; anexos=r.anexos||[]; mostrarFita(); mostrarAnexos(); }
+['#data','#lider','#obsGeral'].forEach(s=>$(s).addEventListener('input', salvarRascunho));
+$('#turnos').addEventListener('click', salvarRascunho);
+
+// ---------- salvar ----------
+$('#btnSalvar').onclick = async () => {
+  if(!aparelho.posto){ trocarTela('aparelho'); toast('Configure o aparelho primeiro.'); return; }
+  const p = postos().find(x=>x.posto===aparelho.posto); const erros=[];
+  const data = $('#data').value, lider = $('#lider').value.trim();
+  if(!data) erros.push('data'); if(!turnoSel) erros.push('horário'); if(!lider) erros.push('líder'); if(!fotosFita.length) erros.push('foto da fita');
+  const bicos = p.bicos.map(b=>{ const s = estado(b.n); const rel = num(s.relogio), fit = num(s.fita);
+    if(!isFinite(fit)) erros.push('fita do bico '+b.n);
+    if(!s.ilegivel && !isFinite(rel)) erros.push('relógio do bico '+b.n);
+    if(!s.foto) erros.push('foto do bico '+b.n);
+    return { bico:b.n, descricao:b.d||'', relogio: s.ilegivel ? null : rel, fita: fit, ilegivel: !!s.ilegivel, obs:(s.obs||'').trim(), foto:s.foto||null, fotoHora:s.fotoHora||null };
+  });
+  if(erros.length){ toast('Falta: '+erros.join(', ')+'.', 6000); return; }
+  if(new Date(data+'T12:00:00') > new Date(Date.now()+86400000)){ toast('Data no futuro. Confira.'); return; }
+  const item = { id: uid(), criadoEm: new Date().toISOString(), status:'pendente', tentativas:0, pin: aparelho.pin,
+    payload: { id:null, posto:aparelho.posto, data, turno:turnoSel, lider, obsGeral:$('#obsGeral').value.trim(), preenchidoEm:new Date().toISOString(), fotosFita: fotosFita.map(f=>f.dataUrl), anexos: anexos.map(f=>f.dataUrl), bicos, app:'pwa-1' } };
+  item.payload.id = item.id;
+  $('#btnSalvar').disabled = true;
+  try{
+    await Fila.salvar(item);
+    // guarda as últimas leituras localmente para o próximo turno
+    const ul = ls.get('ultimasLocal',{}); ul[aparelho.posto] = ul[aparelho.posto]||{};
+    const ordem = turnos().indexOf(turnoSel); const chave = data+'|'+String(ordem).padStart(2,'0');
+    bicos.forEach(b=>{ if(!b.ilegivel) ul[aparelho.posto][b.bico] = {relogio:b.relogio, fita:b.fita, quando: dataBR(data)+' '+turnoSel, chave}; });
+    ls.set('ultimasLocal', ul);
+    estadoBicos = {}; fotosFita = []; anexos = []; mostrarAnexos(); turnoSel=''; $('#obsGeral').value=''; try{ localStorage.removeItem('enc_rascunho'); }catch(e){}
+    montarFormulario(); mostrarFita(); window.scrollTo(0,0);
+    toast(navigator.onLine ? 'Registro salvo. Enviando…' : 'Sem sinal: registro salvo no aparelho e será enviado quando a internet voltar.', 5000);
+    pedirSync(); atualizarLista();
+  }catch(e){ toast('Erro ao salvar no aparelho: '+e.message, 6000); }
+  finally{ $('#btnSalvar').disabled = false; }
+};
+
+// ---------- envio ----------
+async function pedirSync(){
+  try{ const reg = await navigator.serviceWorker.ready; if(reg.sync) await reg.sync.register('enviar-encerrantes'); }catch(e){}
+  sincronizar();
+}
+async function sincronizar(manual){
+  if(!navigator.onLine){ if(manual) toast('Sem internet agora. Vai enviar sozinho quando voltar.'); atualizarSelo(); return; }
+  const r = await sincronizarFila({ aoEnviar: it => { const a = (it.resposta.alertas||[]); toast(a.length ? 'Enviado com alerta: '+a[0] : 'Registro de '+dataBR(it.payload.data)+' '+it.payload.turno+' enviado ✔', 5000); } });
+  if(manual && r.erro) toast('Não enviou: '+r.erro, 6000);
+  if(manual && !r.erro && !r.enviados && !r.ocupado) toast('Nada pendente.');
+  atualizarLista();
+}
+$('#btnSync').onclick = () => sincronizar(true);
+window.addEventListener('online', ()=>{ atualizarSelo(); sincronizar(); baixarConfig(); });
+window.addEventListener('offline', ()=>atualizarSelo());
+setInterval(()=>{ if(navigator.onLine) sincronizar(); }, 60000);
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+  navigator.serviceWorker.addEventListener('message', e=>{ if(e.data && e.data.tipo==='sync') atualizarLista(); });
+  navigator.serviceWorker.ready.then(reg=>{ if(reg.periodicSync) reg.periodicSync.register('enviar-encerrantes',{minInterval:15*60*1000}).catch(()=>{}); }).catch(()=>{});
+}
+
+async function atualizarLista(){
+  let itens=[]; try{ itens = await Fila.listar(); }catch(e){}
+  itens.sort((a,b)=>b.criadoEm.localeCompare(a.criadoEm));
+  const pend = itens.filter(i=>i.status!=='enviado').length;
+  $('#qtdPend').textContent = pend ? '('+pend+')' : '';
+  atualizarSelo(pend);
+  const rot = {pendente:'⏳ Aguardando envio', enviado:'✔ Enviado', recusado:'✖ Recusado pelo servidor'};
+  $('#lista').innerHTML = itens.length ? itens.map(i=>`<div class="item ${i.status}"><b>${esc(i.payload.posto)} · ${dataBR(i.payload.data)} ${esc(i.payload.turno)}</b> — ${rot[i.status]||i.status}<br>
+    <small>Salvo ${new Date(i.criadoEm).toLocaleString('pt-BR')}${i.enviadoEm?' · enviado '+new Date(i.enviadoEm).toLocaleString('pt-BR'):''}${i.erro?' · '+esc(i.erro):''}</small>
+    ${(i.resposta&&i.resposta.alertas&&i.resposta.alertas.length)?'<br><small style="color:var(--warn)">'+i.resposta.alertas.map(esc).join('<br>')+'</small>':''}
+    ${i.status==='recusado'?`<br><button class="btn" style="margin-top:6px;padding:6px 10px" data-retry="${i.id}">Tentar de novo</button>`:''}</div>`).join('') : '<p class="dica">Nenhum registro ainda.</p>';
+}
+$('#lista').addEventListener('click', async e=>{ const id=e.target.dataset.retry; if(!id) return; const it=(await Fila.listar()).find(x=>x.id===id); if(!it) return; it.status='pendente'; it.pin=aparelho.pin; await Fila.salvar(it); sincronizar(true); });
+function atualizarSelo(pend){
+  const s=$('#selo'); const on=navigator.onLine;
+  if(pend===undefined) pend = +($('#qtdPend').textContent.replace(/\D/g,'')||0);
+  s.className='selo'+(on?'':' off'); s.textContent = (on?'Online':'Sem sinal') + (pend? ' · '+pend+' pendente'+(pend>1?'s':'') : '');
+}
+
+// ---------- telas ----------
+function trocarTela(t){
+  document.querySelectorAll('main > section').forEach(s=>s.classList.toggle('oculto', s.id!=='tela-'+t));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('ativo', b.dataset.tela===t));
+  $('#rodape').classList.toggle('oculto', t!=='registro');
+  if(t==='aparelho'){ montarPostos(); $('#cfgLider').value=aparelho.lider||''; $('#cfgPin').value=aparelho.pin||''; }
+  if(t==='envios') atualizarLista();
+}
+document.querySelector('nav').addEventListener('click', e=>{ const b=e.target.closest('button'); if(b) trocarTela(b.dataset.tela); });
+
+// ---------- início ----------
+$('#sobre').innerHTML = 'Versão 1.1 · Servidor: ' + (C.API_URL.indexOf('http')===0 ? 'configurado' : '<b style="color:var(--err)">NÃO configurado (config.js)</b>') + '<br>Instale pelo menu do navegador: “Adicionar à tela inicial”.';
+montarPostos(); carregarRascunho(); montarFormulario(); atualizarLista();
+if(!aparelho.posto) trocarTela('aparelho');
+baixarConfig(); sincronizar();
+if(navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(()=>{});
+})();
+</script>
+</body>
+</html>

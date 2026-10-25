@@ -90,7 +90,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--verde2);border-c
     </div>
 
     <div class="card">
-      <h2><span class="etapa">2</span>Foto da fita dos encerrantes (B2Click)</h2>
+      <h2><span class="etapa">2</span>Foto da fita dos encerrantes (B2Click) — uma só para todos os bicos</h2>
       <div class="foto">
         <label class="btn">📷 Tirar foto<input type="file" accept="image/*" capture="environment" id="fotoFita" hidden></label>
         <div id="prevFita" style="display:flex;gap:6px;flex-wrap:wrap"></div>
@@ -229,8 +229,9 @@ function montarFormulario(){
       </div>
       <label class="chk"><input type="checkbox" data-c="ilegivel"> Relógio ilegível / sem leitura</label>
       <div class="res" data-r>Preencha relógio e fita para calcular a sobra/falta.</div>
-      <label class="req">Foto do medidor</label>
-      <div class="foto"><label class="btn">📷 Tirar foto<input type="file" accept="image/*" capture="environment" data-c="foto" hidden></label><span data-f></span></div>
+      <label class="req">Foto do relógio (medidor) do bico ${esc(b.n)}</label>
+      <div class="foto"><label class="btn">📷 Foto do relógio<input type="file" accept="image/*" capture="environment" data-c="foto" hidden></label><span data-f></span></div>
+      <div class="dica">Só o visor do relógio deste bico. A fita B2Click já foi fotografada uma vez na etapa 2.</div>
       <label>Observação do bico</label>
       <textarea data-c="obs" placeholder="Opcional"></textarea>
     </div>`;
@@ -328,7 +329,7 @@ $('#btnSalvar').onclick = async () => {
   const bicos = p.bicos.map(b=>{ const s = estado(b.n); const rel = num(s.relogio), fit = num(s.fita);
     if(!isFinite(fit)) erros.push('fita do bico '+b.n);
     if(!s.ilegivel && !isFinite(rel)) erros.push('relógio do bico '+b.n);
-    if(!s.foto) erros.push('foto do bico '+b.n);
+    if(!s.foto) erros.push('foto do relógio do bico '+b.n);
     return { bico:b.n, descricao:b.d||'', relogio: s.ilegivel ? null : rel, fita: fit, ilegivel: !!s.ilegivel, obs:(s.obs||'').trim(), foto:s.foto||null, fotoHora:s.fotoHora||null };
   });
   if(erros.length){ toast('Falta: '+erros.join(', ')+'.', 6000); return; }
@@ -404,7 +405,7 @@ function trocarTela(t){
 document.querySelector('nav').addEventListener('click', e=>{ const b=e.target.closest('button'); if(b) trocarTela(b.dataset.tela); });
 
 // ---------- início ----------
-$('#sobre').innerHTML = 'Versão 1.1 · Servidor: ' + (C.API_URL.indexOf('http')===0 ? 'configurado' : '<b style="color:var(--err)">NÃO configurado (config.js)</b>') + '<br>Instale pelo menu do navegador: “Adicionar à tela inicial”.';
+$('#sobre').innerHTML = 'Versão 1.2 · Servidor: ' + (C.API_URL.indexOf('http')===0 ? 'configurado' : '<b style="color:var(--err)">NÃO configurado (config.js)</b>') + '<br>Instale pelo menu do navegador: “Adicionar à tela inicial”.';
 montarPostos(); carregarRascunho(); montarFormulario(); atualizarLista();
 if(!aparelho.posto) trocarTela('aparelho');
 baixarConfig(); sincronizar();

@@ -9,33 +9,42 @@
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
 <style>
-:root{--verde:#0a4d9e;--verde2:#ee8600;--laranja:#ee8600;--fundo:#f4f6f8;--card:#fff;--txt:#1d2329;--sub:#5d6873;--borda:#d9dee3;--ok:#13804a;--okbg:#e5f5ec;--warn:#9a5b00;--warnbg:#fff3dc;--err:#b42318;--errbg:#fdeceb}
+:root{--az:#0a4d9e;--lj:#ee8600;--fundo:#f4f6f8;--card:#fff;--txt:#1d2329;--sub:#5d6873;--borda:#d9dee3;--ok:#13804a;--okbg:#e5f5ec;--warn:#9a5b00;--warnbg:#fff3dc;--err:#b42318;--errbg:#fdeceb}
 *{box-sizing:border-box}
 body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--fundo);color:var(--txt);font-size:16px}
-header{background:var(--verde);color:#fff;padding:10px 16px;display:flex;align-items:center;gap:10px;border-bottom:4px solid var(--laranja)}
+header{background:var(--az);color:#fff;padding:10px 12px 10px 16px;display:flex;align-items:center;gap:10px;border-bottom:4px solid var(--lj)}
 header img{width:36px;height:36px;border-radius:8px}
 header small{display:block;font-size:11.5px;font-weight:500;opacity:.85;letter-spacing:.3px}
-header h1{font-size:18px;margin:0;flex:1;white-space:nowrap;line-height:1.15}
+header h1{font-size:18px;margin:0;flex:1;white-space:nowrap;line-height:1.15;overflow:hidden;text-overflow:ellipsis}
 .topo{position:sticky;top:0;z-index:5}
 .selo{font-size:12px;padding:4px 9px;border-radius:99px;background:rgba(255,255,255,.18);white-space:nowrap}
 .selo.off{background:#ffb020;color:#3a2600}
+.hamb{background:none;border:0;color:#fff;font-size:26px;line-height:1;padding:4px 6px;cursor:pointer}
 nav{display:flex;background:#fff;border-bottom:1px solid var(--borda)}
 nav button{flex:1;border:0;background:none;padding:12px 4px;font-size:15px;color:var(--sub);border-bottom:3px solid transparent}
-nav button.ativo{color:var(--verde);border-color:var(--laranja);font-weight:700}
-main{max-width:640px;margin:0 auto;padding:16px 16px 120px}
+nav button.ativo{color:var(--az);border-color:var(--lj);font-weight:700}
+.menu{position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.35);display:flex;justify-content:flex-end}
+.menu .pn{background:#fff;width:min(300px,85vw);height:100%;padding:16px;box-shadow:-4px 0 20px rgba(0,0,0,.2);display:flex;flex-direction:column;gap:4px}
+.menu .pn h3{margin:4px 0 12px;color:var(--az)}
+.menu .pn button{text-align:left;background:none;border:0;border-radius:9px;padding:13px 10px;font-size:16px;color:var(--txt);cursor:pointer}
+.menu .pn button:hover{background:#eef3fb}
+.menu .pn .sep{height:1px;background:var(--borda);margin:8px 0}
+main{max-width:680px;margin:0 auto;padding:16px 16px 120px}
 .card{background:var(--card);border:1px solid var(--borda);border-radius:12px;padding:14px;margin-bottom:14px}
-.card h2{font-size:16px;margin:0 0 10px}
+.card h2{font-size:16px;margin:0 0 10px;display:flex;align-items:center;gap:8px}
+.card h3{font-size:15px;margin:14px 0 6px;color:var(--az)}
 label{display:block;font-size:13px;color:var(--sub);margin:10px 0 4px;font-weight:600}
-input[type=text],input[type=date],input[type=password],input[inputmode],select,textarea{width:100%;font-size:17px;padding:11px 12px;border:1px solid var(--borda);border-radius:9px;background:#fff;color:var(--txt)}
+input[type=text],input[type=date],input[type=password],input[type=email],input[type=number],input[inputmode],select,textarea{width:100%;font-size:17px;padding:11px 12px;border:1px solid var(--borda);border-radius:9px;background:#fff;color:var(--txt)}
 textarea{min-height:60px;font-size:15px}
-input:focus,select:focus,textarea:focus{outline:2px solid var(--verde2);border-color:transparent}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--lj);border-color:transparent}
 .linha{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .turnos{display:flex;gap:8px;flex-wrap:wrap}
 .turnos button{flex:1;min-width:64px;padding:12px 6px;border:1px solid var(--borda);background:#fff;border-radius:9px;font-size:16px}
-.turnos button.ativo{background:var(--laranja);color:#fff;border-color:var(--laranja);font-weight:700}
-.bico-tit{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.turnos button.ativo{background:var(--lj);color:#fff;border-color:var(--lj);font-weight:700}
+.bico-tit{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
 .bico-tit b{font-size:18px}
-.bico-tit span{font-size:13px;color:var(--sub)}
+.tag{font-size:12px;font-weight:700;padding:3px 9px;border-radius:99px;background:#eef1f4;color:var(--sub)}
+.tag.ob{background:#fff1df;color:#a35a00}.tag.op{background:#eef1f4;color:var(--sub)}
 .dica{font-size:12.5px;color:var(--sub);margin-top:4px}
 .previa{font-size:12.5px;color:var(--sub);margin-top:3px;min-height:15px}
 .res{margin-top:10px;padding:9px 11px;border-radius:9px;font-size:14px;background:#eef1f4}
@@ -43,52 +52,83 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--verde2);border-c
 .foto{display:flex;align-items:center;gap:10px;margin-top:6px;flex-wrap:wrap}
 .foto label.btn{margin:0}
 .foto img{width:64px;height:64px;object-fit:cover;border-radius:8px;border:1px solid var(--borda)}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:12px 16px;border-radius:10px;border:1px solid var(--verde);background:#fff;color:var(--verde);font-size:15px;font-weight:600;cursor:pointer}
-.btn.pri{background:var(--laranja);border-color:var(--laranja);color:#fff;width:100%;font-size:17px;padding:15px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:12px 16px;border-radius:10px;border:1px solid var(--az);background:#fff;color:var(--az);font-size:15px;font-weight:600;cursor:pointer}
+.btn.pri{background:var(--lj);border-color:var(--lj);color:#fff;width:100%;font-size:17px;padding:15px}
+.btn.az{background:var(--az);color:#fff}
+.btn.peq{padding:7px 10px;font-size:14px}
+.btn.del{border-color:var(--err);color:var(--err)}
 .btn:disabled{opacity:.5}
 .chk{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:14px;color:var(--txt);font-weight:400}
 .chk input{width:20px;height:20px}
-.rodape{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--borda);padding:10px 16px calc(10px + env(safe-area-inset-bottom))}
-.rodape .in{max-width:640px;margin:0 auto}
+.rodape{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--borda);padding:10px 16px calc(10px + env(safe-area-inset-bottom));z-index:4}
+.rodape .in{max-width:680px;margin:0 auto}
 .item{border-left:4px solid var(--borda);padding:8px 10px;margin:8px 0;background:#fafbfc;border-radius:6px;font-size:14px}
-.item.enviado{border-color:var(--ok)}.item.pendente{border-color:#ffb020}.item.recusado{border-color:var(--err)}
+.item.enviado,.item.ok{border-color:var(--ok)}.item.pendente,.item.warn{border-color:#ffb020}.item.recusado,.item.err{border-color:var(--err)}
 .item small{color:var(--sub)}
 .aviso{padding:10px 12px;border-radius:9px;background:var(--warnbg);color:var(--warn);font-size:14px;margin-bottom:12px}
-.toast{position:fixed;left:16px;right:16px;bottom:90px;max-width:600px;margin:0 auto;background:#1d2329;color:#fff;padding:12px 14px;border-radius:10px;font-size:15px;z-index:20;display:none}
+.toast{position:fixed;left:16px;right:16px;bottom:90px;max-width:600px;margin:0 auto;background:#1d2329;color:#fff;padding:12px 14px;border-radius:10px;font-size:15px;z-index:40;display:none}
 .oculto{display:none!important}
 .req::after{content:" *";color:var(--err)}
-.hero{position:relative;height:150px;border-radius:14px;overflow:hidden;margin-bottom:14px;background:#0a4d9e url(posto.jpg) center/cover}
+.hero{position:relative;height:140px;border-radius:14px;overflow:hidden;margin-bottom:14px;background:#0a4d9e url(posto.jpg) center/cover}
 .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,77,158,.05) 20%,rgba(10,40,90,.85))}
 .hero div{position:absolute;left:14px;right:14px;bottom:12px;color:#fff;z-index:1}
 .hero b{display:block;font-size:22px}.hero span{font-size:13px;opacity:.9}
-.etapa{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--laranja);color:#fff;font-size:14px;font-weight:700;margin-right:8px;flex:none}
-.card h2{display:flex;align-items:center}
-.card.bico{border-left:5px solid var(--verde)}
+.etapa{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--lj);color:#fff;font-size:14px;font-weight:700;flex:none}
+.card.bico{border-left:5px solid var(--az)}
+.card.bico.opc{border-left-color:#b9c2cc;background:#fbfcfd}
 .logo-sobre{width:160px;display:block;margin:0 auto 10px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:99px;background:#eef3fb;color:var(--az);font-size:14px;font-weight:600}
+.chip button{border:0;background:none;color:var(--err);font-size:16px;cursor:pointer;padding:0 2px}
+.addrow{display:flex;gap:8px;margin-top:8px}
+.addrow input{flex:1}
+.tb{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}
+.tb th,.tb td{border-bottom:1px solid var(--borda);padding:7px 4px;text-align:left;vertical-align:middle}
+.tb th{font-size:12px;color:var(--sub);font-weight:700}
+.tb td input[type=text]{font-size:15px;padding:7px 8px}
+.tb .num{width:64px}
+.tb .ord button{border:1px solid var(--borda);background:#fff;border-radius:6px;width:28px;height:26px;cursor:pointer;font-size:12px}
+.tb .hc{text-align:center}
+.tb .hc input{width:20px;height:20px}
+.scrollx{overflow-x:auto}
+.grade{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:14px}
+.grade b{color:var(--sub);font-weight:600}
+.adm-bar{position:sticky;bottom:0;background:#fff;border-top:1px solid var(--borda);padding:10px 0;margin-top:10px}
 </style>
 </head>
 <body>
-<div class="topo"><header><img src="logo-icone.png" alt=""><h1>Encerrante ARLA<small>POSTOS PICHILAU</small></h1><span id="selo" class="selo">…</span></header>
+<div class="topo"><header><img src="logo-icone.png" alt=""><h1 id="hTitulo">Encerrante ARLA<small>POSTOS PICHILAU</small></h1><span id="selo" class="selo">…</span><button class="hamb" id="btnMenu" aria-label="Menu">☰</button></header>
 <nav>
   <button data-tela="registro" class="ativo">Registrar</button>
   <button data-tela="envios">Envios <span id="qtdPend"></span></button>
-  <button data-tela="aparelho">Aparelho</button>
+  <button data-tela="posto">Posto</button>
 </nav></div>
+
+<div class="menu oculto" id="menu"><div class="pn">
+  <h3>Menu</h3>
+  <button data-ir="registro">📝 Registrar encerrante</button>
+  <button data-ir="envios">📤 Envios do aparelho</button>
+  <button data-ir="posto">⛽ Informações do posto</button>
+  <button data-ir="login">🔑 Entrar / trocar de posto</button>
+  <div class="sep"></div>
+  <button data-ir="admin">⚙️ Área do administrador</button>
+  <button data-ir="sobre">ℹ️ Sobre o app</button>
+</div></div>
+
 <main>
   <!-- ================= REGISTRO ================= -->
   <section id="tela-registro">
-    <div id="avisoConfig" class="aviso oculto">Configure o posto e o seu nome na aba <b>Aparelho</b> antes de registrar.</div>
     <div class="hero"><div><b id="tituloPosto">Posto</b><span id="subHero">Registro de encerrantes de ARLA</span></div></div>
     <div class="card">
       <h2><span class="etapa">1</span>Identificação</h2>
       <div class="linha">
         <div><label class="req" for="data">Data</label><input type="date" id="data"></div>
-        <div><label for="lider" class="req">Líder</label><input type="text" id="lider" autocomplete="name"></div>
+        <div><label class="req" for="lider">Líder</label><select id="lider"></select></div>
       </div>
-      <label class="req">Horário do encerrante (troca de turno)</label>
+      <label class="req">Horário do encerrante</label>
       <div class="turnos" id="turnos"></div>
+      <div class="dica" id="dicaTurno"></div>
     </div>
-
     <div class="card">
       <h2><span class="etapa">2</span>Foto da fita dos encerrantes (B2Click) — uma só para todos os bicos</h2>
       <div class="foto">
@@ -97,10 +137,8 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--verde2);border-c
       </div>
       <div class="dica">Obrigatória. Pode tirar mais de uma se a fita for longa.</div>
     </div>
-
-    <div class="card" style="padding:10px 14px"><h2 style="margin:0"><span class="etapa">3</span>Encerrantes por bico</h2></div>
+    <div class="card" style="padding:10px 14px"><h2 style="margin:0"><span class="etapa">3</span>Encerrantes por bico</h2><div class="dica" id="dicaBicos"></div></div>
     <div id="bicos"></div>
-
     <div class="card">
       <h2><span class="etapa">4</span>Observações e anexos</h2>
       <label for="obsGeral">Observação</label>
@@ -110,7 +148,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--verde2);border-c
         <label class="btn">📎 Anexar imagem<input type="file" accept="image/*" multiple id="anexos" hidden></label>
         <div id="prevAnexos" style="display:flex;gap:6px;flex-wrap:wrap"></div>
       </div>
-      <div class="dica">Comanda, cupom, print, foto de defeito etc. Pode escolher da galeria. Toque na miniatura para remover.</div>
+      <div class="dica">Comanda, cupom, print, foto de defeito etc. Toque na miniatura para remover.</div>
     </div>
   </section>
 
@@ -124,24 +162,74 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--verde2);border-c
     </div>
   </section>
 
-  <!-- ================= APARELHO ================= -->
-  <section id="tela-aparelho" class="oculto">
+  <!-- ================= LOGIN POSTO ================= -->
+  <section id="tela-login" class="oculto">
     <div class="card">
-      <h2>Configuração deste aparelho</h2>
-      <label class="req" for="cfgPosto">Posto</label>
-      <select id="cfgPosto"></select>
-      <label class="req" for="cfgLider">Seu nome (líder)</label>
-      <input type="text" id="cfgLider" autocomplete="name">
-      <label for="cfgPin">PIN do posto</label>
-      <input type="password" id="cfgPin" inputmode="numeric" autocomplete="off">
-      <div class="dica">O PIN é informado pela auditoria/gerência.</div>
-      <div style="margin-top:14px"><button class="btn pri" id="btnSalvarCfg">Salvar</button></div>
+      <h2>🔑 Entrar no posto</h2>
+      <div class="dica">Escolha o posto e digite o PIN informado pela gerência. Depois disso o aparelho mostra só os líderes, bicos e horários desse posto.</div>
+      <label class="req" for="lgPosto">Posto</label>
+      <select id="lgPosto"></select>
+      <label class="req" for="lgPin">PIN do posto</label>
+      <input type="password" id="lgPin" inputmode="numeric" autocomplete="off">
+      <div style="margin-top:14px"><button class="btn pri" id="btnLogin">Entrar</button></div>
+      <div class="dica" style="margin-top:8px">Precisa de internet só nesta etapa.</div>
     </div>
+  </section>
+
+  <!-- ================= POSTO ================= -->
+  <section id="tela-posto" class="oculto">
+    <div class="card">
+      <h2 id="ptNome">Posto</h2>
+      <div class="grade" id="ptGrade"></div>
+      <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+        <button class="btn peq" id="btnPtAtualizar">↻ Atualizar</button>
+        <button class="btn peq" id="btnPtTrocar">🔑 Trocar de posto</button>
+      </div>
+      <div class="dica" id="ptAtualizado"></div>
+    </div>
+    <div class="card"><h2>Bicos e obrigatoriedade</h2><div class="scrollx" id="ptBicos"></div></div>
+    <div class="card"><h2>Pendências (últimos 3 dias)</h2><div id="ptPend"></div></div>
+    <div class="card"><h2>Últimos registros</h2><div id="ptRegs"></div></div>
+  </section>
+
+  <!-- ================= ADMIN ================= -->
+  <section id="tela-admin" class="oculto">
+    <div class="card" id="admLogin">
+      <h2>⚙️ Área do administrador</h2>
+      <label class="req" for="admSenha">Senha do administrador</label>
+      <input type="password" id="admSenha" autocomplete="current-password">
+      <div style="margin-top:14px"><button class="btn pri" id="btnAdmEntrar">Entrar</button></div>
+      <div class="dica" style="margin-top:8px">Precisa de internet. A senha não fica salva no aparelho.</div>
+    </div>
+    <div id="admPainel" class="oculto">
+      <div class="card">
+        <h2>Postos</h2>
+        <div class="addrow"><select id="admPostoSel"></select><button class="btn peq" id="btnNovoPosto">+ Novo</button></div>
+      </div>
+      <div id="admPosto"></div>
+      <div class="card">
+        <h2>Geral (todos os postos)</h2>
+        <label for="gEmailAud">E-mails da auditoria — recebem todos os envios</label>
+        <textarea id="gEmailAud" placeholder="email1@pichilau.com.br, email2@..."></textarea>
+        <div class="linha">
+          <div><label for="gTol">Tolerância (litros)</label><input type="number" id="gTol" min="0" step="0.5"></div>
+          <div><label for="gDias">Dias para pendências</label><input type="number" id="gDias" min="1" max="60"></div>
+        </div>
+        <label class="chk"><input type="checkbox" id="gSoAlertas"> Enviar e-mail só quando houver alerta</label>
+        <h3>Trocar senha do administrador</h3>
+        <input type="password" id="gNovaSenha" placeholder="Nova senha (deixe vazio para manter)" autocomplete="new-password">
+      </div>
+      <div class="adm-bar"><button class="btn pri" id="btnAdmSalvar">💾 Salvar alterações</button>
+        <div style="display:flex;justify-content:space-between;margin-top:8px"><span class="dica" id="admStatus"></span><button class="btn peq" id="btnAdmSair">Sair</button></div></div>
+    </div>
+  </section>
+
+  <!-- ================= SOBRE ================= -->
+  <section id="tela-sobre" class="oculto">
     <div class="card">
       <img class="logo-sobre" src="logo-pichilau.jpg" alt="Postos Pichilau">
       <h2>Sobre</h2>
       <div class="dica" id="sobre"></div>
-      <div style="margin-top:10px"><button class="btn" id="btnAtualizarCfg">↻ Atualizar postos e bicos</button></div>
     </div>
   </section>
 </main>
@@ -154,14 +242,15 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--verde2);border-c
 <script>
 (function(){
 'use strict';
-const C = self.APP_CONFIG;
+const C = self.APP_CONFIG, VERSAO = '2.0';
 const $ = s => document.querySelector(s);
 const ls = {
   get(k, d){ try{ const v = localStorage.getItem('enc_'+k); return v==null ? d : JSON.parse(v); }catch(e){ return d; } },
-  set(k, v){ try{ localStorage.setItem('enc_'+k, JSON.stringify(v)); }catch(e){} }
+  set(k, v){ try{ localStorage.setItem('enc_'+k, JSON.stringify(v)); }catch(e){} },
+  del(k){ try{ localStorage.removeItem('enc_'+k); }catch(e){} }
 };
-
-// ---------- números pt-BR ----------
+function esc(t){ return String(t==null?'':t).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function toast(m, ms){ const t=$('#toast'); t.textContent=m; t.style.display='block'; clearTimeout(toast._t); toast._t=setTimeout(()=>t.style.display='none', ms||3500); }
 function num(s){
   if(s==null) return NaN;
   s = String(s).trim().replace(/\s/g,'').replace(/[Ll]$/,'');
@@ -173,75 +262,121 @@ function num(s){
 const fmt = (n, c=2) => isFinite(n) ? n.toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:c}) : '—';
 const sinal = n => (n>0?'+':'') + fmt(n);
 const hoje = () => { const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); };
+const dataBR = iso => iso ? iso.split('-').reverse().join('/') : '';
 const uid = () => (self.crypto && crypto.randomUUID) ? crypto.randomUUID() : 'id-'+Date.now()+'-'+Math.random().toString(16).slice(2);
-function toast(m, ms){ const t=$('#toast'); t.textContent=m; t.style.display='block'; clearTimeout(toast._t); toast._t=setTimeout(()=>t.style.display='none', ms||3500); }
+const hora = t => { const m=String(t).match(/\d+/); return m?Number(m[0]):0; };
+const normT = t => { const m=String(t||'').match(/(\d{1,2})/); if(!m) return ''; const h=Number(m[1]); return h>=0&&h<=23 ? String(h).padStart(2,'0')+'h' : ''; };
+const servidorOk = () => C.API_URL && C.API_URL.indexOf('http')===0;
 
-// ---------- configuração (postos/bicos) ----------
-let cfgServidor = ls.get('cfgServidor', null);
-function postos(){ return (cfgServidor && cfgServidor.postos && cfgServidor.postos.length) ? cfgServidor.postos : C.POSTOS_PADRAO; }
-function turnos(){ return (cfgServidor && cfgServidor.turnos && cfgServidor.turnos.length) ? cfgServidor.turnos : C.TURNOS_PADRAO; }
-function ultimas(posto){ const u = cfgServidor && cfgServidor.ultimas && cfgServidor.ultimas[posto]; const loc = ls.get('ultimasLocal',{})[posto]||{}; const out = Object.assign({}, u||{}); Object.keys(loc).forEach(b=>{ if(!out[b] || (loc[b].chave > out[b].chave)) out[b]=loc[b]; }); return out; }
-async function baixarConfig(avisar){
-  if(!navigator.onLine || !C.API_URL || C.API_URL.indexOf('http')!==0) { if(avisar) toast('Sem conexão ou servidor não configurado.'); return; }
+async function api(body){
+  const r = await fetch(C.API_URL, {method:'POST', body:JSON.stringify(body), headers:{'Content-Type':'text/plain;charset=utf-8'}, redirect:'follow'});
+  const t = await r.text(); try{ return JSON.parse(t); }catch(e){ throw new Error('Resposta inválida do servidor'); }
+}
+
+// ================= ESTADO DO APARELHO =================
+let aparelho = ls.get('aparelho2', null);   // {posto, pin}
+let cfgPosto = ls.get('cfgPosto', null);    // configuração do posto logado
+(function migrarV1(){
+  if(aparelho) return;
+  const a1 = ls.get('aparelho', null); if(!a1 || !a1.posto) return;
+  aparelho = {posto:a1.posto, pin:a1.pin||''}; ls.set('aparelho2', aparelho);
+  const c1 = ls.get('cfgServidor', null);
+  const p1 = c1 && c1.postos && c1.postos.find(p=>p.posto===a1.posto) || (C.POSTOS_PADRAO||[]).find(p=>p.posto===a1.posto);
+  const hs = (c1 && c1.turnos) || C.TURNOS_PADRAO || ['00h','06h','12h','18h'];
+  if(p1) cfgPosto = { posto:a1.posto, horarios:hs, obrigatorios:[], bicos:p1.bicos.map(b=>({n:b.n,d:b.d,obrig:[]})), lideres: a1.lider?[a1.lider]:[], ultimas:(c1&&c1.ultimas&&c1.ultimas[a1.posto])||{}, pendencias:[], ultimosRegistros:[], provisorio:true };
+  if(cfgPosto) ls.set('cfgPosto', cfgPosto);
+})();
+const logado = () => !!(aparelho && aparelho.posto && cfgPosto);
+
+async function carregarPostos(){
+  let lista = ls.get('listaPostos', null) || (C.POSTOS_PADRAO||[]).map(p=>p.posto);
+  const s = $('#lgPosto'); const preencher = () => { s.innerHTML = '<option value="">Selecione…</option>' + lista.map(p=>`<option>${esc(p)}</option>`).join(''); if(aparelho) s.value = aparelho.posto; };
+  preencher();
+  if(!navigator.onLine || !servidorOk()) return;
+  try{ const j = await api({action:'postos'}); if(j.ok){ lista = j.postos; ls.set('listaPostos', lista); preencher(); } }catch(e){}
+}
+async function atualizarPosto(avisar){
+  if(!aparelho || !navigator.onLine || !servidorOk()) { if(avisar) toast('Sem internet agora.'); return false; }
   try{
-    const r = await fetch(C.API_URL+'?action=config', {redirect:'follow'});
-    const j = await r.json();
-    if(j.ok){ cfgServidor = j; ls.set('cfgServidor', j); montarPostos(); montarFormulario(); if(avisar) toast('Postos e bicos atualizados.'); }
+    const j = await api({action:'loginPosto', posto:aparelho.posto, pin:aparelho.pin});
+    if(j.ok){ cfgPosto = j; ls.set('cfgPosto', j); montarTudo(); if(avisar) toast('Informações do posto atualizadas.'); return true; }
+    if(avisar || (cfgPosto && cfgPosto.provisorio)) toast('Posto: '+(j.erro||'erro')+' Entre novamente pelo menu.', 6000);
   }catch(e){ if(avisar) toast('Não foi possível atualizar agora.'); }
+  return false;
 }
-
-// ---------- aparelho ----------
-let aparelho = ls.get('aparelho', {posto:'', lider:'', pin:''});
-function montarPostos(){
-  const s = $('#cfgPosto'); s.innerHTML = '<option value="">Selecione…</option>' + postos().map(p=>`<option>${esc(p.posto)}</option>`).join('');
-  s.value = aparelho.posto || '';
-}
-function esc(t){ return String(t==null?'':t).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
-$('#btnSalvarCfg').onclick = () => {
-  const p = $('#cfgPosto').value, l = $('#cfgLider').value.trim();
-  if(!p || !l){ toast('Informe o posto e o seu nome.'); return; }
-  aparelho = {posto:p, lider:l, pin:$('#cfgPin').value.trim()}; ls.set('aparelho', aparelho);
-  montarFormulario(); trocarTela('registro'); toast('Aparelho configurado para '+p+'.');
+$('#btnLogin').onclick = async () => {
+  const posto = $('#lgPosto').value, pin = $('#lgPin').value.trim();
+  if(!posto){ toast('Escolha o posto.'); return; }
+  if(!navigator.onLine){ toast('Precisa de internet para entrar.'); return; }
+  $('#btnLogin').disabled = true;
+  try{
+    const j = await api({action:'loginPosto', posto, pin});
+    if(!j.ok){ toast(j.erro||'Não foi possível entrar.', 5000); return; }
+    const trocou = !aparelho || aparelho.posto !== posto;
+    aparelho = {posto, pin}; ls.set('aparelho2', aparelho); cfgPosto = j; ls.set('cfgPosto', j);
+    if(trocou){ limparRascunho(); }
+    $('#lgPin').value=''; montarTudo(); trocarTela('registro'); toast('Bem-vindo ao '+posto+'.');
+  }catch(e){ toast('Falha de conexão. Tente de novo.'); }
+  finally{ $('#btnLogin').disabled = false; }
 };
-$('#btnAtualizarCfg').onclick = () => baixarConfig(true);
 
-// ---------- formulário ----------
+// ================= FORMULÁRIO =================
 let turnoSel = '', fotosFita = [], anexos = [], estadoBicos = {};
+function ultimas(){ const u = (cfgPosto && cfgPosto.ultimas) || {}; const loc = (ls.get('ultimasLocal2',{})[aparelho&&aparelho.posto])||{}; const out = Object.assign({}, u); Object.keys(loc).forEach(b=>{ if(!out[b] || loc[b].chave > out[b].chave) out[b]=loc[b]; }); return out; }
+function obrigatorio(b){ return !!turnoSel && (b.obrig||[]).indexOf(turnoSel)>=0; }
+
+function montarTudo(){
+  const ok = logado();
+  $('#hTitulo').innerHTML = (ok ? esc(aparelho.posto) : 'Encerrante ARLA') + '<small>ENCERRANTE ARLA · POSTOS PICHILAU</small>';
+  $('#tituloPosto').textContent = ok ? 'Pichilau ' + aparelho.posto : 'Entre no posto pelo menu';
+  $('#subHero').textContent = ok ? 'Encerrantes de ARLA' : 'Menu ☰ › Entrar / trocar de posto';
+  montarFormulario(); montarPosto();
+}
 function montarFormulario(){
-  const ok = !!aparelho.posto;
-  $('#avisoConfig').classList.toggle('oculto', ok);
-  $('#tituloPosto').textContent = ok ? 'Pichilau ' + aparelho.posto : 'Posto não configurado';
-  $('#subHero').textContent = ok ? 'Encerrantes de ARLA · líder ' + (aparelho.lider||'') : 'Configure na aba Aparelho';
-  if(!$('#lider').value) $('#lider').value = aparelho.lider || '';
   if(!$('#data').value) $('#data').value = hoje();
-  $('#turnos').innerHTML = turnos().map(t=>`<button type="button" data-t="${esc(t)}" class="${t===turnoSel?'ativo':''}">${esc(t)}</button>`).join('');
-  const p = postos().find(x=>x.posto===aparelho.posto);
-  const ult = ultimas(aparelho.posto);
-  $('#bicos').innerHTML = !p ? '' : p.bicos.map(b=>{
-    const u = ult[b.n];
-    const ant = u ? `Último registro (${esc(u.quando)}): Relógio ${fmt(u.relogio)} · Fita ${fmt(u.fita)}` : 'Sem registro anterior neste aparelho.';
-    return `<div class="card bico" data-bico="${esc(b.n)}">
-      <div class="bico-tit"><b>Bico ${esc(b.n)}</b><span>${esc(b.d||'')}</span></div>
+  if(!logado()){ $('#turnos').innerHTML=''; $('#bicos').innerHTML=''; $('#lider').innerHTML=''; return; }
+  const lid = cfgPosto.lideres||[], salvo = ls.get('ultimoLider','');
+  $('#lider').innerHTML = '<option value="">Selecione…</option>' + lid.map(l=>`<option>${esc(l)}</option>`).join('') + (lid.length?'':'<option value="__outro">Outro (digitar)</option>');
+  if(lid.indexOf(salvo)>=0) $('#lider').value = salvo;
+  const hs = cfgPosto.horarios||[];
+  if(turnoSel && hs.indexOf(turnoSel)<0) turnoSel='';
+  $('#turnos').innerHTML = hs.map(t=>`<button type="button" data-t="${esc(t)}" class="${t===turnoSel?'ativo':''}">${esc(t)}</button>`).join('') || '<div class="dica">Nenhum horário cadastrado. Fale com o administrador.</div>';
+  const ob = cfgPosto.obrigatorios||[];
+  $('#dicaTurno').textContent = ob.length ? 'Horários obrigatórios: ' + ob.join(', ') : '';
+  montarBicos();
+}
+function montarBicos(){
+  const ult = ultimas();
+  const bs = (cfgPosto && cfgPosto.bicos) || [];
+  const nOb = bs.filter(obrigatorio).length;
+  $('#dicaBicos').textContent = !turnoSel ? 'Escolha o horário para ver quais bicos são obrigatórios.' : `${nOb} obrigatório(s) às ${turnoSel}. Bicos opcionais podem ficar em branco.`;
+  $('#bicos').innerHTML = bs.map(b=>{
+    const u = ult[b.n], ob = obrigatorio(b);
+    const tag = !turnoSel ? `<span class="tag">Obrigatório: ${esc((b.obrig||[]).join(', ')||'nenhum horário')}</span>` : (ob ? `<span class="tag ob">Obrigatório às ${esc(turnoSel)}</span>` : `<span class="tag op">Opcional às ${esc(turnoSel)}</span>`);
+    const ant = u ? `Último registro (${esc(u.quando)}): Relógio ${fmt(u.relogio)} · Fita ${fmt(u.fita)}` : 'Sem registro anterior.';
+    const rq = ob ? 'req' : '';
+    return `<div class="card bico ${turnoSel&&!ob?'opc':''}" data-bico="${esc(b.n)}">
+      <div class="bico-tit"><b>Bico ${esc(b.n)} <span style="font-size:13px;color:var(--sub);font-weight:500">${esc(b.d||'')}</span></b>${tag}</div>
       <div class="dica">${ant}</div>
       <div class="linha">
-        <div><label class="req">Encerrante do relógio (medidor)</label><input inputmode="decimal" data-c="relogio" placeholder="ex.: 140021"><div class="previa" data-p="relogio"></div></div>
-        <div><label class="req">Encerrante da fita (B2Click)</label><input inputmode="decimal" data-c="fita" placeholder="ex.: 140437"><div class="previa" data-p="fita"></div></div>
+        <div><label class="${rq}">Encerrante do relógio (medidor)</label><input inputmode="decimal" data-c="relogio" placeholder="ex.: 140021"><div class="previa" data-p="relogio"></div></div>
+        <div><label class="${rq}">Encerrante da fita (B2Click)</label><input inputmode="decimal" data-c="fita" placeholder="ex.: 140437"><div class="previa" data-p="fita"></div></div>
       </div>
       <label class="chk"><input type="checkbox" data-c="ilegivel"> Relógio ilegível / sem leitura</label>
       <div class="res" data-r>Preencha relógio e fita para calcular a sobra/falta.</div>
-      <label class="req">Foto do relógio (medidor) do bico ${esc(b.n)}</label>
+      <label class="${rq}">Foto do relógio (medidor) do bico ${esc(b.n)}</label>
       <div class="foto"><label class="btn">📷 Foto do relógio<input type="file" accept="image/*" capture="environment" data-c="foto" hidden></label><span data-f></span></div>
-      <div class="dica">Só o visor do relógio deste bico. A fita B2Click já foi fotografada uma vez na etapa 2.</div>
+      <div class="dica">Só o visor do relógio deste bico. A fita B2Click já foi fotografada na etapa 2.</div>
       <label>Observação do bico</label>
       <textarea data-c="obs" placeholder="Opcional"></textarea>
     </div>`;
   }).join('');
-  // restaura o que já foi digitado (rascunho)
   Object.keys(estadoBicos).forEach(n=>{ const el = document.querySelector(`[data-bico="${CSS.escape(n)}"]`); if(!el) return; const s=estadoBicos[n];
     el.querySelector('[data-c=relogio]').value = s.relogio||''; el.querySelector('[data-c=fita]').value = s.fita||''; el.querySelector('[data-c=ilegivel]').checked = !!s.ilegivel; el.querySelector('[data-c=obs]').value = s.obs||'';
     if(s.foto) el.querySelector('[data-f]').innerHTML = `<img src="${s.foto}">`; calcular(el); });
 }
-$('#turnos').addEventListener('click', e=>{ const b=e.target.closest('button'); if(!b) return; turnoSel=b.dataset.t; [...$('#turnos').children].forEach(x=>x.classList.toggle('ativo', x===b)); });
+$('#turnos').addEventListener('click', e=>{ const b=e.target.closest('button'); if(!b) return; turnoSel=b.dataset.t; [...$('#turnos').children].forEach(x=>x.classList.toggle('ativo', x===b)); montarBicos(); salvarRascunho(); });
+$('#lider').addEventListener('change', ()=>{ if($('#lider').value==='__outro'){ const n=prompt('Nome do líder:'); if(n){ const o=document.createElement('option'); o.textContent=n.trim(); $('#lider').insertBefore(o,$('#lider').lastChild); $('#lider').value=n.trim(); } else $('#lider').value=''; } salvarRascunho(); });
 
 function estado(n){ return estadoBicos[n] || (estadoBicos[n]={}); }
 function calcular(card){
@@ -249,20 +384,18 @@ function calcular(card){
   const rel = num(s.relogio), fit = num(s.fita);
   card.querySelector('[data-p=relogio]').textContent = s.relogio ? (isFinite(rel) ? '= '+fmt(rel,3)+' L' : 'Número inválido') : '';
   card.querySelector('[data-p=fita]').textContent = s.fita ? (isFinite(fit) ? '= '+fmt(fit,3)+' L' : 'Número inválido') : '';
-  const u = ultimas(aparelho.posto)[n];
+  const u = ultimas()[n];
   let cls='res', msg='';
-  if(s.ilegivel){ cls+=' warn'; msg = isFinite(fit) ? 'Relógio ilegível — será registrado como pendência para a auditoria.' : 'Informe ao menos a fita.'; }
+  if(s.ilegivel){ cls+=' warn'; msg = isFinite(fit) ? 'Relógio ilegível — será registrado para a auditoria.' : 'Informe ao menos a fita.'; }
   else if(isFinite(rel) && isFinite(fit)){
-    const dif = fit - rel;
-    msg = `Sobra/falta acumulada (fita − relógio): <b>${sinal(dif)} L</b>`;
+    msg = `Sobra/falta acumulada (fita − relógio): <b>${sinal(fit-rel)} L</b>`;
     if(u && isFinite(u.relogio) && isFinite(u.fita)){
-      const dr = rel - u.relogio, df = fit - u.fita, dp = df - dr;
+      const dr = rel - u.relogio, df = fit - u.fita, dp = df - dr, tol = (cfgPosto && cfgPosto.tolerancia) || 5;
       msg += `<br>Desde o último registro: relógio ${sinal(dr)} L · fita ${sinal(df)} L → diferença do período <b>${sinal(dp)} L</b>`;
-      const tol = (cfgServidor && cfgServidor.tolerancia) || 5;
       if(dr < 0 || df < 0){ cls+=' err'; msg += '<br>⚠ Encerrante menor que o anterior. Confira a digitação — se estiver certo, pode salvar normalmente.'; }
-      else if(Math.abs(dp) > tol){ cls+=' warn'; msg += `<br>⚠ Diferença acima de ${fmt(tol)} L em relação ao registro anterior. Pode salvar normalmente; se souber o motivo, escreva na observação.`; }
+      else if(Math.abs(dp) > tol){ cls+=' warn'; msg += `<br>⚠ Diferença acima de ${fmt(tol)} L. Pode salvar normalmente; se souber o motivo, escreva na observação.`; }
       else cls+=' ok';
-    } else cls += Math.abs(dif) > 0 ? '' : ' ok';
+    }
   } else msg = 'Preencha relógio e fita para calcular a sobra/falta.';
   r.className = cls; r.innerHTML = msg;
 }
@@ -273,15 +406,14 @@ $('#bicos').addEventListener('input', e=>{
 $('#bicos').addEventListener('change', async e=>{
   if(e.target.dataset.c!=='foto') return; const card = e.target.closest('[data-bico]'); const f = e.target.files[0]; if(!f) return;
   const n = card.dataset.bico; card.querySelector('[data-f]').textContent = 'processando…';
-  try{
-    const img = await prepararFoto(f, `${aparelho.posto} • Bico ${n} • ${dataBR($('#data').value)} ${turnoSel||''}`);
+  try{ const img = await prepararFoto(f, `${aparelho.posto} • Bico ${n} • ${dataBR($('#data').value)} ${turnoSel||''}`);
     estado(n).foto = img.dataUrl; estado(n).fotoHora = img.hora; card.querySelector('[data-f]').innerHTML = `<img src="${img.dataUrl}">`; salvarRascunho();
   }catch(err){ card.querySelector('[data-f]').textContent = 'erro na foto, tente de novo'; }
   e.target.value='';
 });
 $('#fotoFita').addEventListener('change', async e=>{
   const f = e.target.files[0]; if(!f) return;
-  try{ const img = await prepararFoto(f, `${aparelho.posto} • Fita B2Click • ${dataBR($('#data').value)} ${turnoSel||''}`); fotosFita.push(img); mostrarFita(); salvarRascunho(); }catch(err){ toast('Erro na foto, tente de novo.'); }
+  try{ fotosFita.push(await prepararFoto(f, `${aparelho.posto} • Fita B2Click • ${dataBR($('#data').value)} ${turnoSel||''}`)); mostrarFita(); salvarRascunho(); }catch(err){ toast('Erro na foto, tente de novo.'); }
   e.target.value='';
 });
 $('#anexos').addEventListener('change', async e=>{
@@ -289,12 +421,10 @@ $('#anexos').addEventListener('change', async e=>{
   mostrarAnexos(); salvarRascunho(); e.target.value='';
 });
 function mostrarAnexos(){ $('#prevAnexos').innerHTML = anexos.map((f,i)=>`<img src="${f.dataUrl}" data-i="${i}" title="Toque para remover">`).join(''); }
-$('#prevAnexos').addEventListener('click', e=>{ const i=e.target.dataset.i; if(i==null) return; if(confirm('Remover este anexo?')){ anexos.splice(+i,1); mostrarAnexos(); salvarRascunho(); } });
 function mostrarFita(){ $('#prevFita').innerHTML = fotosFita.map((f,i)=>`<img src="${f.dataUrl}" data-i="${i}" title="Toque para remover">`).join(''); }
+$('#prevAnexos').addEventListener('click', e=>{ const i=e.target.dataset.i; if(i==null) return; if(confirm('Remover este anexo?')){ anexos.splice(+i,1); mostrarAnexos(); salvarRascunho(); } });
 $('#prevFita').addEventListener('click', e=>{ const i=e.target.dataset.i; if(i==null) return; if(confirm('Remover esta foto?')){ fotosFita.splice(+i,1); mostrarFita(); salvarRascunho(); } });
-const dataBR = iso => iso ? iso.split('-').reverse().join('/') : '';
 
-// reduz a foto (envio rápido com sinal fraco) e carimba posto/bico/data
 function prepararFoto(file, carimbo){
   return new Promise((res, rej)=>{
     const url = URL.createObjectURL(file), im = new Image();
@@ -303,7 +433,7 @@ function prepararFoto(file, carimbo){
       const w = Math.round(im.width*k), h = Math.round(im.height*k);
       const cv = document.createElement('canvas'); cv.width=w; cv.height=h; const cx = cv.getContext('2d');
       cx.drawImage(im,0,0,w,h);
-      const agora = new Date(), txt = carimbo + ' • foto ' + agora.toLocaleString('pt-BR');
+      const txt = carimbo + ' • foto ' + new Date().toLocaleString('pt-BR');
       const fs = Math.max(14, Math.round(w/40)); cx.font = `bold ${fs}px sans-serif`;
       cx.fillStyle='rgba(0,0,0,.6)'; cx.fillRect(0,h-fs*1.8,w,fs*1.8); cx.fillStyle='#fff'; cx.fillText(txt, fs*.5, h-fs*.6, w-fs);
       URL.revokeObjectURL(url);
@@ -313,60 +443,59 @@ function prepararFoto(file, carimbo){
     im.src = url;
   });
 }
+function salvarRascunho(){ if(!aparelho) return; ls.set('rascunho2', {posto:aparelho.posto, data:$('#data').value, turno:turnoSel, lider:$('#lider').value, obs:$('#obsGeral').value, bicos:estadoBicos, fotosFita, anexos}); }
+function carregarRascunho(){ const r = ls.get('rascunho2', null); if(!r || !aparelho || r.posto!==aparelho.posto) return; $('#data').value=r.data||hoje(); turnoSel=r.turno||''; $('#obsGeral').value=r.obs||''; estadoBicos=r.bicos||{}; fotosFita=r.fotosFita||[]; anexos=r.anexos||[]; if(r.lider) ls.set('ultimoLider', r.lider); mostrarFita(); mostrarAnexos(); }
+function limparRascunho(){ estadoBicos={}; fotosFita=[]; anexos=[]; turnoSel=''; $('#obsGeral').value=''; mostrarFita(); mostrarAnexos(); ls.del('rascunho2'); }
+['#data','#obsGeral'].forEach(s=>$(s).addEventListener('input', salvarRascunho));
 
-// rascunho: se o app fechar no meio, nada se perde
-function salvarRascunho(){ ls.set('rascunho', {posto:aparelho.posto, data:$('#data').value, turno:turnoSel, lider:$('#lider').value, obs:$('#obsGeral').value, bicos:estadoBicos, fotosFita, anexos}); }
-function carregarRascunho(){ const r = ls.get('rascunho', null); if(!r || r.posto!==aparelho.posto) return; $('#data').value=r.data||hoje(); turnoSel=r.turno||''; $('#lider').value=r.lider||aparelho.lider; $('#obsGeral').value=r.obs||''; estadoBicos=r.bicos||{}; fotosFita=r.fotosFita||[]; anexos=r.anexos||[]; mostrarFita(); mostrarAnexos(); }
-['#data','#lider','#obsGeral'].forEach(s=>$(s).addEventListener('input', salvarRascunho));
-$('#turnos').addEventListener('click', salvarRascunho);
-
-// ---------- salvar ----------
+// ================= SALVAR =================
 $('#btnSalvar').onclick = async () => {
-  if(!aparelho.posto){ trocarTela('aparelho'); toast('Configure o aparelho primeiro.'); return; }
-  const p = postos().find(x=>x.posto===aparelho.posto); const erros=[];
-  const data = $('#data').value, lider = $('#lider').value.trim();
-  if(!data) erros.push('data'); if(!turnoSel) erros.push('horário'); if(!lider) erros.push('líder'); if(!fotosFita.length) erros.push('foto da fita');
-  const bicos = p.bicos.map(b=>{ const s = estado(b.n); const rel = num(s.relogio), fit = num(s.fita);
+  if(!logado()){ trocarTela('login'); toast('Entre no posto primeiro.'); return; }
+  const erros=[], data = $('#data').value, lider = $('#lider').value;
+  if(!data) erros.push('data'); if(!turnoSel) erros.push('horário'); if(!lider || lider==='__outro') erros.push('líder'); if(!fotosFita.length) erros.push('foto da fita');
+  const bicos = [];
+  (cfgPosto.bicos||[]).forEach(b=>{
+    const s = estado(b.n), rel = num(s.relogio), fit = num(s.fita), ob = obrigatorio(b);
+    const mexeu = !!(s.relogio || s.fita || s.foto || s.ilegivel);
+    if(!ob && !mexeu) return;            // opcional em branco: não envia
     if(!isFinite(fit)) erros.push('fita do bico '+b.n);
     if(!s.ilegivel && !isFinite(rel)) erros.push('relógio do bico '+b.n);
     if(!s.foto) erros.push('foto do relógio do bico '+b.n);
-    return { bico:b.n, descricao:b.d||'', relogio: s.ilegivel ? null : rel, fita: fit, ilegivel: !!s.ilegivel, obs:(s.obs||'').trim(), foto:s.foto||null, fotoHora:s.fotoHora||null };
+    bicos.push({ bico:b.n, descricao:b.d||'', relogio: s.ilegivel ? null : rel, fita: fit, ilegivel: !!s.ilegivel, obs:(s.obs||'').trim(), foto:s.foto||null, fotoHora:s.fotoHora||null });
   });
+  if(!bicos.length && !erros.length) erros.push('pelo menos um bico');
   if(erros.length){ toast('Falta: '+erros.join(', ')+'.', 6000); return; }
   if(new Date(data+'T12:00:00') > new Date(Date.now()+86400000)){ toast('Data no futuro. Confira.'); return; }
   const item = { id: uid(), criadoEm: new Date().toISOString(), status:'pendente', tentativas:0, pin: aparelho.pin,
-    payload: { id:null, posto:aparelho.posto, data, turno:turnoSel, lider, obsGeral:$('#obsGeral').value.trim(), preenchidoEm:new Date().toISOString(), fotosFita: fotosFita.map(f=>f.dataUrl), anexos: anexos.map(f=>f.dataUrl), bicos, app:'pwa-1' } };
+    payload: { id:null, posto:aparelho.posto, data, turno:turnoSel, lider, obsGeral:$('#obsGeral').value.trim(), preenchidoEm:new Date().toISOString(), fotosFita: fotosFita.map(f=>f.dataUrl), anexos: anexos.map(f=>f.dataUrl), bicos, app:'pwa-'+VERSAO } };
   item.payload.id = item.id;
   $('#btnSalvar').disabled = true;
   try{
     await Fila.salvar(item);
-    // guarda as últimas leituras localmente para o próximo turno
-    const ul = ls.get('ultimasLocal',{}); ul[aparelho.posto] = ul[aparelho.posto]||{};
-    const ordem = turnos().indexOf(turnoSel); const chave = data+'|'+String(ordem).padStart(2,'0');
+    ls.set('ultimoLider', lider);
+    const ul = ls.get('ultimasLocal2',{}); ul[aparelho.posto] = ul[aparelho.posto]||{};
+    const chave = data+'|'+String(hora(turnoSel)).padStart(2,'0');
     bicos.forEach(b=>{ if(!b.ilegivel) ul[aparelho.posto][b.bico] = {relogio:b.relogio, fita:b.fita, quando: dataBR(data)+' '+turnoSel, chave}; });
-    ls.set('ultimasLocal', ul);
-    estadoBicos = {}; fotosFita = []; anexos = []; mostrarAnexos(); turnoSel=''; $('#obsGeral').value=''; try{ localStorage.removeItem('enc_rascunho'); }catch(e){}
-    montarFormulario(); mostrarFita(); window.scrollTo(0,0);
+    ls.set('ultimasLocal2', ul);
+    limparRascunho(); montarFormulario(); window.scrollTo(0,0);
     toast(navigator.onLine ? 'Registro salvo. Enviando…' : 'Sem sinal: registro salvo no aparelho e será enviado quando a internet voltar.', 5000);
     pedirSync(); atualizarLista();
   }catch(e){ toast('Erro ao salvar no aparelho: '+e.message, 6000); }
   finally{ $('#btnSalvar').disabled = false; }
 };
 
-// ---------- envio ----------
-async function pedirSync(){
-  try{ const reg = await navigator.serviceWorker.ready; if(reg.sync) await reg.sync.register('enviar-encerrantes'); }catch(e){}
-  sincronizar();
-}
+// ================= ENVIO =================
+async function pedirSync(){ try{ const reg = await navigator.serviceWorker.ready; if(reg.sync) await reg.sync.register('enviar-encerrantes'); }catch(e){} sincronizar(); }
 async function sincronizar(manual){
   if(!navigator.onLine){ if(manual) toast('Sem internet agora. Vai enviar sozinho quando voltar.'); atualizarSelo(); return; }
   const r = await sincronizarFila({ aoEnviar: it => { const a = (it.resposta.alertas||[]); toast(a.length ? 'Enviado com alerta: '+a[0] : 'Registro de '+dataBR(it.payload.data)+' '+it.payload.turno+' enviado ✔', 5000); } });
   if(manual && r.erro) toast('Não enviou: '+r.erro, 6000);
   if(manual && !r.erro && !r.enviados && !r.ocupado) toast('Nada pendente.');
+  if(r.enviados) atualizarPosto();
   atualizarLista();
 }
 $('#btnSync').onclick = () => sincronizar(true);
-window.addEventListener('online', ()=>{ atualizarSelo(); sincronizar(); baixarConfig(); });
+window.addEventListener('online', ()=>{ atualizarSelo(); sincronizar(); atualizarPosto(); });
 window.addEventListener('offline', ()=>atualizarSelo());
 setInterval(()=>{ if(navigator.onLine) sincronizar(); }, 60000);
 if('serviceWorker' in navigator){
@@ -374,7 +503,6 @@ if('serviceWorker' in navigator){
   navigator.serviceWorker.addEventListener('message', e=>{ if(e.data && e.data.tipo==='sync') atualizarLista(); });
   navigator.serviceWorker.ready.then(reg=>{ if(reg.periodicSync) reg.periodicSync.register('enviar-encerrantes',{minInterval:15*60*1000}).catch(()=>{}); }).catch(()=>{});
 }
-
 async function atualizarLista(){
   let itens=[]; try{ itens = await Fila.listar(); }catch(e){}
   itens.sort((a,b)=>b.criadoEm.localeCompare(a.criadoEm));
@@ -383,32 +511,170 @@ async function atualizarLista(){
   atualizarSelo(pend);
   const rot = {pendente:'⏳ Aguardando envio', enviado:'✔ Enviado', recusado:'✖ Recusado pelo servidor'};
   $('#lista').innerHTML = itens.length ? itens.map(i=>`<div class="item ${i.status}"><b>${esc(i.payload.posto)} · ${dataBR(i.payload.data)} ${esc(i.payload.turno)}</b> — ${rot[i.status]||i.status}<br>
-    <small>Salvo ${new Date(i.criadoEm).toLocaleString('pt-BR')}${i.enviadoEm?' · enviado '+new Date(i.enviadoEm).toLocaleString('pt-BR'):''}${i.erro?' · '+esc(i.erro):''}</small>
+    <small>${esc(i.payload.lider||'')} · salvo ${new Date(i.criadoEm).toLocaleString('pt-BR')}${i.enviadoEm?' · enviado '+new Date(i.enviadoEm).toLocaleString('pt-BR'):''}${i.erro?' · '+esc(i.erro):''}</small>
     ${(i.resposta&&i.resposta.alertas&&i.resposta.alertas.length)?'<br><small style="color:var(--warn)">'+i.resposta.alertas.map(esc).join('<br>')+'</small>':''}
-    ${i.status==='recusado'?`<br><button class="btn" style="margin-top:6px;padding:6px 10px" data-retry="${i.id}">Tentar de novo</button>`:''}</div>`).join('') : '<p class="dica">Nenhum registro ainda.</p>';
+    ${i.status==='recusado'?`<br><button class="btn peq" style="margin-top:6px" data-retry="${i.id}">Tentar de novo</button>`:''}</div>`).join('') : '<p class="dica">Nenhum registro ainda.</p>';
 }
-$('#lista').addEventListener('click', async e=>{ const id=e.target.dataset.retry; if(!id) return; const it=(await Fila.listar()).find(x=>x.id===id); if(!it) return; it.status='pendente'; it.pin=aparelho.pin; await Fila.salvar(it); sincronizar(true); });
+$('#lista').addEventListener('click', async e=>{ const id=e.target.dataset.retry; if(!id) return; const it=(await Fila.listar()).find(x=>x.id===id); if(!it) return; it.status='pendente'; it.pin=aparelho?aparelho.pin:it.pin; await Fila.salvar(it); sincronizar(true); });
 function atualizarSelo(pend){
   const s=$('#selo'); const on=navigator.onLine;
   if(pend===undefined) pend = +($('#qtdPend').textContent.replace(/\D/g,'')||0);
-  s.className='selo'+(on?'':' off'); s.textContent = (on?'Online':'Sem sinal') + (pend? ' · '+pend+' pendente'+(pend>1?'s':'') : '');
+  s.className='selo'+(on?'':' off'); s.textContent = (on?'Online':'Sem sinal') + (pend? ' · '+pend : '');
 }
 
-// ---------- telas ----------
+// ================= TELA POSTO =================
+function montarPosto(){
+  if(!logado()){ $('#ptNome').textContent='Nenhum posto'; $('#ptGrade').innerHTML='<span>Entre pelo menu › Entrar / trocar de posto.</span>'; $('#ptBicos').innerHTML=''; $('#ptPend').innerHTML=''; $('#ptRegs').innerHTML=''; return; }
+  const c = cfgPosto;
+  $('#ptNome').textContent = '⛽ ' + c.posto;
+  $('#ptGrade').innerHTML = `<b>Horários</b><span>${esc((c.horarios||[]).join(', ')||'—')}</span>
+    <b>Obrigatórios</b><span>${esc((c.obrigatorios||[]).join(', ')||'—')}</span>
+    <b>Líderes</b><span>${esc((c.lideres||[]).join(', ')||'— (cadastrar na Área do administrador)')}</span>
+    <b>Bicos</b><span>${(c.bicos||[]).length}</span>`;
+  const hs = c.horarios||[];
+  $('#ptBicos').innerHTML = `<table class="tb"><tr><th>Bico</th><th>Descrição</th>${hs.map(h=>`<th class="hc">${esc(h)}</th>`).join('')}<th>Último</th></tr>` +
+    (c.bicos||[]).map(b=>{ const u=(c.ultimas||{})[b.n]; return `<tr><td><b>${esc(b.n)}</b></td><td>${esc(b.d)}</td>${hs.map(h=>`<td class="hc">${(b.obrig||[]).indexOf(h)>=0?'●':'<span style="color:#c3cad2">○</span>'}</td>`).join('')}<td><small>${u?esc(u.quando):'—'}</small></td></tr>`; }).join('') + '</table><div class="dica">● obrigatório · ○ opcional</div>';
+  const pd = c.pendencias||[];
+  $('#ptPend').innerHTML = pd.length ? pd.map(p=>`<div class="item ${p.status==='SEM REGISTRO'?'err':'warn'}"><b>${esc(p.dataBR)} ${esc(p.turno)}</b> — ${esc(p.status)}${p.faltando?' (bico '+esc(p.faltando)+')':''}</div>`).join('') : '<div class="item ok">Nenhuma pendência ✔</div>';
+  const rg = c.ultimosRegistros||[];
+  $('#ptRegs').innerHTML = rg.length ? rg.map(r=>`<div class="item ${r.alertas?'warn':'ok'}"><b>${esc(r.data)} ${esc(r.turno)}</b> — ${esc(r.lider||'')}<br><small>${r.bicos} bico(s)${r.alertas?' · '+r.alertas+' alerta(s)':''}</small></div>`).join('') : '<p class="dica">Sem registros ainda.</p>';
+  $('#ptAtualizado').textContent = c.atualizado ? 'Atualizado em ' + new Date(c.atualizado).toLocaleString('pt-BR') : (c.provisorio ? 'Informações provisórias — toque em Atualizar com internet.' : '');
+}
+$('#btnPtAtualizar').onclick = () => atualizarPosto(true);
+$('#btnPtTrocar').onclick = () => trocarTela('login');
+
+// ================= ADMIN =================
+let adm = null, admSenha = '', admSel = 0;
+$('#btnAdmEntrar').onclick = async () => {
+  const s = $('#admSenha').value; if(!s){ toast('Digite a senha.'); return; }
+  if(!navigator.onLine){ toast('Precisa de internet.'); return; }
+  $('#btnAdmEntrar').disabled = true;
+  try{ const j = await api({action:'adminLogin', senha:s}); if(!j.ok){ toast(j.erro||'Senha incorreta.', 5000); return; }
+    admSenha = s; adm = j.config; $('#admSenha').value=''; admSel = Math.max(0, adm.postos.findIndex(p=>aparelho&&p.posto===aparelho.posto)); abrirPainel();
+  }catch(e){ toast('Falha de conexão.'); } finally{ $('#btnAdmEntrar').disabled = false; }
+};
+function abrirPainel(){
+  $('#admLogin').classList.add('oculto'); $('#admPainel').classList.remove('oculto');
+  const g = adm.geral||{};
+  $('#gEmailAud').value = g.EMAIL_AUDITORIA||''; $('#gTol').value = g.TOLERANCIA_LITROS||5; $('#gDias').value = g.DIAS_PENDENCIA||7; $('#gSoAlertas').checked = /^s/i.test(g.EMAIL_SO_ALERTAS||''); $('#gNovaSenha').value='';
+  montarAdmSel(); montarAdmPosto(); $('#admStatus').textContent='';
+}
+function sairAdmin(){ adm=null; admSenha=''; $('#admPainel').classList.add('oculto'); $('#admLogin').classList.remove('oculto'); }
+$('#btnAdmSair').onclick = () => { if(admSujo && !confirm('Sair sem salvar as alterações?')) return; admSujo=false; sairAdmin(); };
+let admSujo = false; const sujo = () => { admSujo = true; $('#admStatus').textContent = 'Alterações não salvas'; };
+function montarAdmSel(){ $('#admPostoSel').innerHTML = adm.postos.map((p,i)=>`<option value="${i}">${esc(p.posto||'(sem nome)')}${p.ativo===false?' (inativo)':''}</option>`).join(''); $('#admPostoSel').value = String(admSel); }
+$('#admPostoSel').onchange = () => { admSel = +$('#admPostoSel').value; montarAdmPosto(); };
+$('#btnNovoPosto').onclick = () => { const n = prompt('Nome do novo posto:'); if(!n) return; adm.postos.push({posto:n.trim(), pin:'', horarios:['00h','06h','18h'], emailsPosto:'', emailsGerente:'', ativo:true, bicos:[], lideres:[]}); admSel = adm.postos.length-1; montarAdmSel(); montarAdmPosto(); sujo(); };
+function montarAdmPosto(){
+  const p = adm.postos[admSel]; if(!p){ $('#admPosto').innerHTML=''; return; }
+  p.horarios = (p.horarios||[]).slice().sort((a,b)=>hora(a)-hora(b));
+  const hs = p.horarios;
+  $('#admPosto').innerHTML = `
+  <div class="card">
+    <h2>⛽ Dados do posto</h2>
+    <div class="linha"><div><label>Nome do posto</label><input type="text" data-f="posto" value="${esc(p.posto)}"></div>
+    <div><label>PIN do posto</label><input type="text" inputmode="numeric" data-f="pin" value="${esc(p.pin)}"></div></div>
+    <label class="chk"><input type="checkbox" data-f="ativo" ${p.ativo!==false?'checked':''}> Posto ativo (aparece no app)</label>
+    <label>E-mails do posto — recebem aviso de cada envio (sem acesso à planilha)</label>
+    <textarea data-f="emailsPosto" placeholder="pista.escada@pichilau.com.br">${esc(p.emailsPosto)}</textarea>
+    <label>E-mails do gerente — recebem aviso de cada envio</label>
+    <textarea data-f="emailsGerente" placeholder="gerente.escada@pichilau.com.br">${esc(p.emailsGerente)}</textarea>
+  </div>
+  <div class="card">
+    <h2>🕒 Horários de registro</h2>
+    <div class="chips">${hs.map((h,i)=>`<span class="chip">${esc(h)}<button data-delh="${i}" title="Remover">✕</button></span>`).join('') || '<span class="dica">Nenhum horário.</span>'}</div>
+    <div class="addrow"><input type="text" inputmode="numeric" id="novoH" placeholder="Hora (ex.: 12)"><button class="btn peq" id="addH">+ Horário</button></div>
+    <div class="dica">Marque abaixo, em cada bico, em quais horários ele é obrigatório. Horário sem nenhum bico obrigatório não gera pendência.</div>
+  </div>
+  <div class="card">
+    <h2>👤 Líderes que fazem o registro</h2>
+    <div class="chips">${(p.lideres||[]).map((l,i)=>`<span class="chip">${esc(l)}<button data-dell="${i}" title="Remover">✕</button></span>`).join('') || '<span class="dica">Nenhum líder cadastrado.</span>'}</div>
+    <div class="addrow"><input type="text" id="novoL" placeholder="Nome do líder"><button class="btn peq" id="addL">+ Líder</button></div>
+    <div class="dica">Aparecem na lista (menu suspenso) do campo Líder só neste posto.</div>
+  </div>
+  <div class="card">
+    <h2>⛽ Bicos (ordem de preenchimento)</h2>
+    <div class="scrollx"><table class="tb">
+      <tr><th></th><th>Bico</th><th>Descrição</th>${hs.map(h=>`<th class="hc">${esc(h)}</th>`).join('')}<th></th></tr>
+      ${(p.bicos||[]).map((b,i)=>`<tr data-bi="${i}">
+        <td class="ord"><button data-up="${i}" title="Subir">▲</button><br><button data-dn="${i}" title="Descer">▼</button></td>
+        <td><input type="text" class="num" data-bf="n" value="${esc(b.n)}"></td>
+        <td><input type="text" data-bf="d" value="${esc(b.d)}"></td>
+        ${hs.map(h=>`<td class="hc"><input type="checkbox" data-bo="${esc(h)}" ${(b.obrig||[]).indexOf(h)>=0?'checked':''}></td>`).join('')}
+        <td><button class="btn peq del" data-delb="${i}" title="Remover bico">✕</button></td></tr>`).join('')}
+    </table></div>
+    <div class="addrow"><button class="btn peq" id="addB">+ Cadastrar bico</button>${hs.length?`<button class="btn peq" id="todosOb">Marcar todos obrigatórios</button>`:''}</div>
+    <div class="dica">Caixa marcada = bico obrigatório naquele horário. Use ▲▼ para a ordem que aparece no app.</div>
+  </div>
+  <div class="card"><button class="btn del" id="delPosto">Remover este posto</button><div class="dica">Para só esconder, desmarque "Posto ativo". Os registros já feitos continuam na planilha.</div></div>`;
+}
+$('#admPosto').addEventListener('input', e=>{
+  const p = adm.postos[admSel], t = e.target;
+  if(t.dataset.f){ p[t.dataset.f] = t.type==='checkbox' ? t.checked : t.value; if(t.dataset.f==='posto'||t.dataset.f==='ativo') montarAdmSel(); sujo(); return; }
+  const tr = t.closest('[data-bi]'); if(!tr) return; const b = p.bicos[+tr.dataset.bi];
+  if(t.dataset.bf){ b[t.dataset.bf] = t.value; sujo(); }
+  if(t.dataset.bo){ b.obrig = b.obrig||[]; const h=t.dataset.bo, k=b.obrig.indexOf(h); if(t.checked && k<0) b.obrig.push(h); if(!t.checked && k>=0) b.obrig.splice(k,1); sujo(); }
+});
+$('#admPosto').addEventListener('click', e=>{
+  const p = adm.postos[admSel], t = e.target.closest('button'); if(!t) return;
+  const d = t.dataset;
+  if(t.id==='addH'){ const h = normT($('#novoH').value); if(!h){ toast('Digite a hora (0 a 23).'); return; } if(p.horarios.indexOf(h)<0) p.horarios.push(h); }
+  else if(d.delh!=null){ const h=p.horarios[+d.delh]; if(!confirm('Remover o horário '+h+'?')) return; p.horarios.splice(+d.delh,1); (p.bicos||[]).forEach(b=>{ b.obrig=(b.obrig||[]).filter(x=>x!==h); }); }
+  else if(t.id==='addL'){ const l=$('#novoL').value.trim(); if(!l) return; p.lideres=p.lideres||[]; if(p.lideres.map(x=>x.toLowerCase()).indexOf(l.toLowerCase())<0) p.lideres.push(l); }
+  else if(d.dell!=null){ p.lideres.splice(+d.dell,1); }
+  else if(t.id==='addB'){ p.bicos=p.bicos||[]; p.bicos.push({n:'', d:'ARLA', obrig:p.horarios.slice()}); }
+  else if(t.id==='todosOb'){ (p.bicos||[]).forEach(b=>{ b.obrig=p.horarios.slice(); }); }
+  else if(d.delb!=null){ const b=p.bicos[+d.delb]; if(!confirm('Remover o bico '+(b.n||'')+'?')) return; p.bicos.splice(+d.delb,1); }
+  else if(d.up!=null){ const i=+d.up; if(i>0){ [p.bicos[i-1],p.bicos[i]]=[p.bicos[i],p.bicos[i-1]]; } }
+  else if(d.dn!=null){ const i=+d.dn; if(i<p.bicos.length-1){ [p.bicos[i+1],p.bicos[i]]=[p.bicos[i],p.bicos[i+1]]; } }
+  else if(t.id==='delPosto'){ if(!confirm('Remover o posto '+p.posto+' da configuração?')) return; adm.postos.splice(admSel,1); admSel=0; montarAdmSel(); }
+  else return;
+  montarAdmPosto(); sujo();
+  if(t.id==='addB'){ const ins=$('#admPosto').querySelectorAll('[data-bf="n"]'); if(ins.length) ins[ins.length-1].focus(); }
+});
+$('#admPosto').addEventListener('keydown', e=>{ if(e.key==='Enter' && (e.target.id==='novoH'||e.target.id==='novoL')){ e.preventDefault(); $(e.target.id==='novoH'?'#addH':'#addL').click(); } });
+['#gEmailAud','#gTol','#gDias','#gSoAlertas','#gNovaSenha'].forEach(s=>$(s).addEventListener('input', sujo));
+$('#btnAdmSalvar').onclick = async () => {
+  for(const p of adm.postos){
+    if(!String(p.posto||'').trim()){ toast('Há posto sem nome.'); return; }
+    const vistos={}; for(const b of (p.bicos||[])){ const n=String(b.n||'').trim(); if(!n){ toast('Bico sem número no posto '+p.posto+'.'); return; } if(vistos[n]){ toast('Bico '+n+' repetido no posto '+p.posto+'.'); return; } vistos[n]=1; }
+  }
+  adm.geral = { EMAIL_AUDITORIA:$('#gEmailAud').value, TOLERANCIA_LITROS:Number($('#gTol').value)||5, DIAS_PENDENCIA:Number($('#gDias').value)||7, EMAIL_SO_ALERTAS:$('#gSoAlertas').checked?'SIM':'NÃO' };
+  const nova = $('#gNovaSenha').value;
+  if(nova && nova.length<4){ toast('A nova senha precisa de pelo menos 4 caracteres.'); return; }
+  $('#btnAdmSalvar').disabled = true; $('#admStatus').textContent = 'Salvando…';
+  try{
+    const j = await api({action:'adminSalvar', senha:admSenha, config:adm, novaSenha:nova||undefined});
+    if(!j.ok){ toast(j.erro||'Erro ao salvar.', 6000); $('#admStatus').textContent='Erro: '+(j.erro||''); return; }
+    if(j.senhaAlterada) admSenha = nova;
+    adm = j.config; admSujo=false; abrirPainel(); $('#admStatus').textContent = 'Salvo ✔ ' + new Date().toLocaleTimeString('pt-BR');
+    toast('Configuração salva. Os aparelhos recebem ao abrir o app com internet.', 5000);
+    atualizarPosto(); carregarPostos();
+  }catch(e){ toast('Falha de conexão. Nada foi salvo.'); $('#admStatus').textContent='Não salvo'; }
+  finally{ $('#btnAdmSalvar').disabled = false; }
+};
+
+// ================= MENU / TELAS =================
+$('#btnMenu').onclick = () => $('#menu').classList.remove('oculto');
+$('#menu').addEventListener('click', e=>{ const b=e.target.closest('[data-ir]'); if(b) trocarTela(b.dataset.ir); if(b || e.target.id==='menu') $('#menu').classList.add('oculto'); });
 function trocarTela(t){
+  if(t==='registro' && !logado()) t='login';
   document.querySelectorAll('main > section').forEach(s=>s.classList.toggle('oculto', s.id!=='tela-'+t));
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('ativo', b.dataset.tela===t));
   $('#rodape').classList.toggle('oculto', t!=='registro');
-  if(t==='aparelho'){ montarPostos(); $('#cfgLider').value=aparelho.lider||''; $('#cfgPin').value=aparelho.pin||''; }
   if(t==='envios') atualizarLista();
+  if(t==='login') carregarPostos();
+  if(t==='posto'){ montarPosto(); atualizarPosto(); }
+  window.scrollTo(0,0);
 }
 document.querySelector('nav').addEventListener('click', e=>{ const b=e.target.closest('button'); if(b) trocarTela(b.dataset.tela); });
+window.addEventListener('beforeunload', e=>{ if(adm && admSujo){ e.preventDefault(); e.returnValue=''; } });
 
-// ---------- início ----------
-$('#sobre').innerHTML = 'Versão 1.2 · Servidor: ' + (C.API_URL.indexOf('http')===0 ? 'configurado' : '<b style="color:var(--err)">NÃO configurado (config.js)</b>') + '<br>Instale pelo menu do navegador: “Adicionar à tela inicial”.';
-montarPostos(); carregarRascunho(); montarFormulario(); atualizarLista();
-if(!aparelho.posto) trocarTela('aparelho');
-baixarConfig(); sincronizar();
+// ================= INÍCIO =================
+$('#sobre').innerHTML = 'Versão ' + VERSAO + ' · Servidor: ' + (servidorOk() ? 'configurado' : '<b style="color:var(--err)">NÃO configurado</b>') + '<br>Instale pelo menu do navegador: “Adicionar à tela inicial”.<br>Dúvidas: apoio.escada@pichilau.com.br';
+carregarRascunho(); montarTudo(); atualizarLista();
+trocarTela(logado() ? 'registro' : 'login');
+atualizarPosto(); sincronizar(); carregarPostos();
 if(navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(()=>{});
 })();
 </script>

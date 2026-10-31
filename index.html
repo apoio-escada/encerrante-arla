@@ -94,6 +94,13 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--lj);border-color
 .grade{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:14px}
 .grade b{color:var(--sub);font-weight:600}
 .adm-bar{position:sticky;bottom:0;background:#fff;border-top:1px solid var(--borda);padding:10px 0;margin-top:10px}
+.h2l{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.h2l h2{margin:0}
+.btn.copia{font-size:13px;padding:6px 9px}
+#copiaModal{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.5);display:flex;align-items:flex-end;justify-content:center}
+#copiaModal .card{width:100%;max-width:520px;max-height:88vh;overflow:auto;margin:0;border-radius:16px 16px 0 0}
+#copiaModal .grupo{border:1px solid var(--borda);border-radius:10px;padding:8px 10px;margin-top:10px}
+#copiaModal .grupo b{font-size:14px}
 </style>
 </head>
 <body>
@@ -227,17 +234,8 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--lj);border-color
         <h2>Geral (todos os postos)</h2>
         <label for="gEmailAud">E-mails da auditoria — recebem todos os envios</label>
         <textarea id="gEmailAud" placeholder="email1@pichilau.com.br, email2@..."></textarea>
-        <div class="linha">
-          <div><label for="gTol">Tolerância (litros)</label><input type="number" id="gTol" min="0" step="0.5"></div>
-          <div><label for="gDias">Dias para pendências</label><input type="number" id="gDias" min="1" max="60"></div>
-        </div>
-        <label class="chk"><input type="checkbox" id="gSoAlertas"> Enviar e-mail só quando houver alerta</label>
-        <label for="gFotoModo">Fotos da fita e dos relógios</label>
-        <select id="gFotoModo">
-          <option value="CAMERA">Só pela câmera, no ato do registro</option>
-          <option value="LIVRE">Câmera ou anexar arquivo/galeria do celular</option>
-        </select>
-        <div class="dica">Os anexos da etapa 4 (comanda, cupom, print) podem sempre vir do celular.</div>
+        <label for="gDias">Dias para pendências (resumo da auditoria)</label><input type="number" id="gDias" min="1" max="60">
+        <div class="dica">Modo da foto, tolerância e e-mail só com alerta agora ficam em cada posto (cartão "Regras do posto"), com o botão "Aplicar a outros postos".</div>
       </div>
       <div class="card">
         <h2>Administrador / auditor</h2>
@@ -271,7 +269,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--lj);border-color
 <script>
 (function(){
 'use strict';
-const C = self.APP_CONFIG, VERSAO = '2.2';
+const C = self.APP_CONFIG, VERSAO = '2.3';
 const $ = s => document.querySelector(s);
 const ls = {
   get(k, d){ try{ const v = localStorage.getItem('enc_'+k); return v==null ? d : JSON.parse(v); }catch(e){ return d; } },
@@ -626,7 +624,7 @@ $('#btnAdmEntrar').onclick = async () => {
 function abrirPainel(){
   $('#admLogin').classList.add('oculto'); $('#admPainel').classList.remove('oculto');
   const g = adm.geral||{};
-  $('#gEmailAud').value = g.EMAIL_AUDITORIA||''; $('#gTol').value = g.TOLERANCIA_LITROS||5; $('#gDias').value = g.DIAS_PENDENCIA||7; $('#gSoAlertas').checked = /^s/i.test(g.EMAIL_SO_ALERTAS||''); $('#gFotoModo').value = g.FOTO_MODO==='LIVRE'?'LIVRE':'CAMERA'; $('#gNovaSenha').value=''; $('#gNovaSenha2').value=''; $('#gEmailAdm').value=''; $('#gEmailAdmAtual').textContent = admEmail||'—';
+  $('#gEmailAud').value = g.EMAIL_AUDITORIA||''; $('#gDias').value = g.DIAS_PENDENCIA||7; $('#gNovaSenha').value=''; $('#gNovaSenha2').value=''; $('#gEmailAdm').value=''; $('#gEmailAdmAtual').textContent = admEmail||'—';
   montarAdmSel(); montarAdmPosto(); $('#admStatus').textContent='';
 }
 function sairAdmin(){ adm=null; admSenha=''; $('#admPainel').classList.add('oculto'); $('#admLogin').classList.remove('oculto'); }
@@ -634,14 +632,14 @@ $('#btnAdmSair').onclick = () => { if(admSujo && !confirm('Sair sem salvar as al
 let admSujo = false; const sujo = () => { admSujo = true; $('#admStatus').textContent = 'Alterações não salvas'; };
 function montarAdmSel(){ $('#admPostoSel').innerHTML = adm.postos.map((p,i)=>`<option value="${i}">${esc(p.posto||'(sem nome)')}${p.ativo===false?' (inativo)':''}</option>`).join(''); $('#admPostoSel').value = String(admSel); }
 $('#admPostoSel').onchange = () => { admSel = +$('#admPostoSel').value; montarAdmPosto(); };
-$('#btnNovoPosto').onclick = () => { const n = prompt('Nome do novo posto:'); if(!n) return; adm.postos.push({posto:n.trim(), pin:'', horarios:['00h','06h','18h'], emailsPosto:'', emailsGerente:'', ativo:true, bicos:[], lideres:[]}); admSel = adm.postos.length-1; montarAdmSel(); montarAdmPosto(); sujo(); };
+$('#btnNovoPosto').onclick = () => { const n = prompt('Nome do novo posto:'); if(!n) return; adm.postos.push({posto:n.trim(), pin:'', horarios:['00h','06h','18h'], emailsPosto:'', emailsGerente:'', ativo:true, fotoModo:'CAMERA', tolerancia:5, soAlertas:false, bicos:[], lideres:[]}); admSel = adm.postos.length-1; montarAdmSel(); montarAdmPosto(); sujo(); };
 function montarAdmPosto(){
   const p = adm.postos[admSel]; if(!p){ $('#admPosto').innerHTML=''; return; }
   p.horarios = (p.horarios||[]).slice().sort((a,b)=>hora(a)-hora(b));
   const hs = p.horarios;
   $('#admPosto').innerHTML = `
   <div class="card">
-    <h2>⛽ Dados do posto</h2>
+    <div class="h2l"><h2>⛽ Dados do posto</h2><button class="btn peq copia" data-copia="dados" type="button">📋 Aplicar a outros postos</button></div>
     <div class="linha"><div><label>Nome do posto</label><input type="text" data-f="posto" value="${esc(p.posto)}"></div>
     <div><label>PIN do posto</label><input type="text" inputmode="numeric" data-f="pin" value="${esc(p.pin)}"></div></div>
     <label class="chk"><input type="checkbox" data-f="ativo" ${p.ativo!==false?'checked':''}> Posto ativo (aparece no app)</label>
@@ -651,19 +649,19 @@ function montarAdmPosto(){
     <textarea data-f="emailsGerente" placeholder="gerente.escada@pichilau.com.br">${esc(p.emailsGerente)}</textarea>
   </div>
   <div class="card">
-    <h2>🕒 Horários de registro</h2>
+    <div class="h2l"><h2>🕒 Horários de registro</h2><button class="btn peq copia" data-copia="horarios" type="button">📋 Aplicar a outros postos</button></div>
     <div class="chips">${hs.map((h,i)=>`<span class="chip">${esc(h)}<button data-delh="${i}" title="Remover">✕</button></span>`).join('') || '<span class="dica">Nenhum horário.</span>'}</div>
     <div class="addrow"><input type="text" inputmode="numeric" id="novoH" placeholder="Hora (ex.: 12)"><button class="btn peq" id="addH">+ Horário</button></div>
     <div class="dica">Marque abaixo, em cada bico, em quais horários ele é obrigatório. Horário sem nenhum bico obrigatório não gera pendência.</div>
   </div>
   <div class="card">
-    <h2>👤 Líderes que fazem o registro</h2>
+    <div class="h2l"><h2>👤 Líderes que fazem o registro</h2><button class="btn peq copia" data-copia="lideres" type="button">📋 Aplicar a outros postos</button></div>
     <div class="chips">${(p.lideres||[]).map((l,i)=>`<span class="chip">${esc(l)}<button data-dell="${i}" title="Remover">✕</button></span>`).join('') || '<span class="dica">Nenhum líder cadastrado.</span>'}</div>
     <div class="addrow"><input type="text" id="novoL" placeholder="Nome do líder"><button class="btn peq" id="addL">+ Líder</button></div>
     <div class="dica">Aparecem na lista (menu suspenso) do campo Líder só neste posto.</div>
   </div>
   <div class="card">
-    <h2>⛽ Bicos (ordem de preenchimento)</h2>
+    <div class="h2l"><h2>⛽ Bicos (ordem de preenchimento)</h2><button class="btn peq copia" data-copia="bicos" type="button">📋 Aplicar a outros postos</button></div>
     <div class="scrollx"><table class="tb">
       <tr><th></th><th>Bico</th><th>Descrição</th>${hs.map(h=>`<th class="hc">${esc(h)}</th>`).join('')}<th></th></tr>
       ${(p.bicos||[]).map((b,i)=>`<tr data-bi="${i}">
@@ -675,6 +673,17 @@ function montarAdmPosto(){
     </table></div>
     <div class="addrow"><button class="btn peq" id="addB">+ Cadastrar bico</button>${hs.length?`<button class="btn peq" id="todosOb">Marcar todos obrigatórios</button>`:''}</div>
     <div class="dica">Caixa marcada = bico obrigatório naquele horário. Use ▲▼ para a ordem que aparece no app.</div>
+  </div>
+  <div class="card">
+    <div class="h2l"><h2>📋 Regras do posto</h2><button class="btn peq copia" data-copia="regras" type="button">📋 Aplicar a outros postos</button></div>
+    <label>Fotos da fita e dos relógios</label>
+    <select data-f="fotoModo">
+      <option value="CAMERA" ${p.fotoModo!=='LIVRE'?'selected':''}>Só pela câmera, no ato do registro</option>
+      <option value="LIVRE" ${p.fotoModo==='LIVRE'?'selected':''}>Câmera ou anexar arquivo/galeria do celular</option>
+    </select>
+    <div class="linha"><div><label>Tolerância (litros)</label><input type="number" min="0" step="0.5" data-f="tolerancia" value="${esc(p.tolerancia==null?5:p.tolerancia)}"></div><div></div></div>
+    <label class="chk"><input type="checkbox" data-f="soAlertas" ${p.soAlertas?'checked':''}> E-mail só quando houver alerta</label>
+    <div class="dica">Anexos da etapa 4 (comanda, cupom, print) sempre podem vir do celular.</div>
   </div>
   <div class="card"><button class="btn del" id="delPosto">Remover este posto</button><div class="dica">Para só esconder, desmarque "Posto ativo". Os registros já feitos continuam na planilha.</div></div>`;
 }
@@ -688,6 +697,7 @@ $('#admPosto').addEventListener('input', e=>{
 $('#admPosto').addEventListener('click', e=>{
   const p = adm.postos[admSel], t = e.target.closest('button'); if(!t) return;
   const d = t.dataset;
+  if(d.copia){ abrirCopia(d.copia); return; }
   if(t.id==='addH'){ const h = normT($('#novoH').value); if(!h){ toast('Digite a hora (0 a 23).'); return; } if(p.horarios.indexOf(h)<0) p.horarios.push(h); }
   else if(d.delh!=null){ const h=p.horarios[+d.delh]; if(!confirm('Remover o horário '+h+'?')) return; p.horarios.splice(+d.delh,1); (p.bicos||[]).forEach(b=>{ b.obrig=(b.obrig||[]).filter(x=>x!==h); }); }
   else if(t.id==='addL'){ const l=$('#novoL').value.trim(); if(!l) return; p.lideres=p.lideres||[]; if(p.lideres.map(x=>x.toLowerCase()).indexOf(l.toLowerCase())<0) p.lideres.push(l); }
@@ -702,14 +712,78 @@ $('#admPosto').addEventListener('click', e=>{
   montarAdmPosto(); sujo();
   if(t.id==='addB'){ const ins=$('#admPosto').querySelectorAll('[data-bf="n"]'); if(ins.length) ins[ins.length-1].focus(); }
 });
+// ---------- aplicar configuração a outros postos (todos ou alguns) ----------
+const SECOES = {
+  dados:   { nome:'Dados do posto', campos:[['emailsPosto','E-mails do posto',1],['emailsGerente','E-mails do gerente',1],['ativo','Posto ativo/inativo',0],['pin','PIN do posto',0]] },
+  regras:  { nome:'Regras do posto', campos:[['fotoModo','Modo da foto',1],['tolerancia','Tolerância (litros)',1],['soAlertas','E-mail só com alerta',1]] },
+  horarios:{ nome:'Horários de registro', modos:[['sub','Substituir pelos deste posto'],['add','Só acrescentar os que faltam']] },
+  lideres: { nome:'Líderes', modos:[['add','Só acrescentar os que faltam'],['sub','Substituir pela lista deste posto']] },
+  bicos:   { nome:'Bicos', modos:[['obr','Só a obrigatoriedade por horário (bicos de mesmo número)'],['add','Acrescentar os bicos que faltam'],['sub','Substituir a lista inteira de bicos']] }
+};
+function abrirCopia(sec){
+  const S = SECOES[sec], src = adm.postos[admSel];
+  const outros = adm.postos.map((p,i)=>({p,i})).filter(x=>x.i!==admSel);
+  if(!outros.length){ toast('Não há outros postos cadastrados.'); return; }
+  const m = document.createElement('div'); m.id='copiaModal';
+  m.innerHTML = `<div class="card">
+    <h2>📋 Aplicar ${esc(S.nome)}</h2>
+    <div class="dica">Copia do posto <b>${esc(src.posto)}</b> para os postos marcados. Depois toque em <b>Salvar alterações</b>.</div>
+    ${S.campos?`<div class="grupo"><b>O que copiar</b>${S.campos.map(c=>`<label class="chk"><input type="checkbox" data-campo="${c[0]}" ${c[2]?'checked':''}> ${esc(c[1])}</label>`).join('')}</div>`:''}
+    ${S.modos?`<div class="grupo"><b>Como aplicar</b>${S.modos.map((c,k)=>`<label class="chk"><input type="radio" name="cpModo" value="${c[0]}" ${k?'':'checked'}> ${esc(c[1])}</label>`).join('')}</div>`:''}
+    <div class="grupo"><b>Para quais postos</b>
+      <label class="chk"><input type="checkbox" id="cpTodos"> <b>Todos os postos</b></label>
+      ${outros.map(x=>`<label class="chk"><input type="checkbox" data-alvo="${x.i}"> ${esc(x.p.posto)}${x.p.ativo===false?' (inativo)':''}</label>`).join('')}
+    </div>
+    <div class="addrow" style="margin-top:14px"><button class="btn pri" id="cpAplicar" type="button">Aplicar</button><button class="btn" id="cpCancelar" type="button">Cancelar</button></div>
+  </div>`;
+  document.body.appendChild(m);
+  const alvos = () => [...m.querySelectorAll('[data-alvo]')];
+  m.querySelector('#cpTodos').onchange = e => alvos().forEach(c=>c.checked=e.target.checked);
+  alvos().forEach(c=>c.onchange=()=>{ m.querySelector('#cpTodos').checked = alvos().every(x=>x.checked); });
+  m.onclick = e => { if(e.target===m || e.target.id==='cpCancelar') m.remove(); };
+  m.querySelector('#cpAplicar').onclick = () => {
+    const sel = alvos().filter(c=>c.checked).map(c=>+c.dataset.alvo);
+    if(!sel.length){ toast('Marque ao menos um posto.'); return; }
+    const campos = [...m.querySelectorAll('[data-campo]')].filter(c=>c.checked).map(c=>c.dataset.campo);
+    if(S.campos && !campos.length){ toast('Marque o que copiar.'); return; }
+    if(campos.indexOf('pin')>=0 && !confirm('Copiar também o PIN? Os postos marcados passarão a usar o mesmo PIN.')) return;
+    const modo = (m.querySelector('[name=cpModo]:checked')||{}).value;
+    sel.forEach(i=>aplicarSecao(sec, src, adm.postos[i], campos, modo));
+    m.remove(); sujo();
+    toast(`${S.nome} aplicado em ${sel.length} posto(s). Toque em Salvar alterações.`, 5000);
+  };
+}
+function aplicarSecao(sec, src, t, campos, modo){
+  const lw = a => (a||[]).map(x=>String(x).toLowerCase());
+  if(sec==='dados' || sec==='regras'){ campos.forEach(c=>{ t[c] = src[c]; }); return; }
+  if(sec==='horarios'){
+    t.horarios = modo==='sub' ? src.horarios.slice() : (t.horarios||[]).concat(src.horarios.filter(h=>(t.horarios||[]).indexOf(h)<0));
+    t.horarios.sort((a,b)=>hora(a)-hora(b));
+    (t.bicos||[]).forEach(b=>{ b.obrig=(b.obrig||[]).filter(h=>t.horarios.indexOf(h)>=0); });
+    return;
+  }
+  if(sec==='lideres'){
+    if(modo==='sub') t.lideres = (src.lideres||[]).slice();
+    else { t.lideres = t.lideres||[]; (src.lideres||[]).forEach(l=>{ if(lw(t.lideres).indexOf(l.toLowerCase())<0) t.lideres.push(l); }); }
+    return;
+  }
+  if(sec==='bicos'){
+    const hs = t.horarios||[], filtra = o => (o||[]).filter(h=>hs.indexOf(h)>=0);
+    const copia = b => ({ n:b.n, d:b.d, obrig: filtra(b.obrig) });
+    t.bicos = t.bicos||[];
+    if(modo==='sub') t.bicos = (src.bicos||[]).map(copia);
+    else if(modo==='add') (src.bicos||[]).forEach(b=>{ if(!t.bicos.some(x=>String(x.n)===String(b.n))) t.bicos.push(copia(b)); });
+    else (src.bicos||[]).forEach(b=>{ const x = t.bicos.find(x=>String(x.n)===String(b.n)); if(x) x.obrig = filtra(b.obrig); });
+  }
+}
 $('#admPosto').addEventListener('keydown', e=>{ if(e.key==='Enter' && (e.target.id==='novoH'||e.target.id==='novoL')){ e.preventDefault(); $(e.target.id==='novoH'?'#addH':'#addL').click(); } });
-['#gEmailAud','#gTol','#gDias','#gSoAlertas','#gFotoModo','#gNovaSenha','#gNovaSenha2','#gEmailAdm'].forEach(s=>$(s).addEventListener('input', sujo));
+['#gEmailAud','#gDias','#gNovaSenha','#gNovaSenha2','#gEmailAdm'].forEach(s=>$(s).addEventListener('input', sujo));
 $('#btnAdmSalvar').onclick = async () => {
   for(const p of adm.postos){
     if(!String(p.posto||'').trim()){ toast('Há posto sem nome.'); return; }
     const vistos={}; for(const b of (p.bicos||[])){ const n=String(b.n||'').trim(); if(!n){ toast('Bico sem número no posto '+p.posto+'.'); return; } if(vistos[n]){ toast('Bico '+n+' repetido no posto '+p.posto+'.'); return; } vistos[n]=1; }
   }
-  adm.geral = { EMAIL_AUDITORIA:$('#gEmailAud').value, TOLERANCIA_LITROS:Number($('#gTol').value)||5, DIAS_PENDENCIA:Number($('#gDias').value)||7, EMAIL_SO_ALERTAS:$('#gSoAlertas').checked?'SIM':'NÃO', FOTO_MODO:$('#gFotoModo').value };
+  adm.geral = { EMAIL_AUDITORIA:$('#gEmailAud').value, DIAS_PENDENCIA:Number($('#gDias').value)||7 };
   const nova = $('#gNovaSenha').value, novoEmail = $('#gEmailAdm').value.trim();
   if(nova && nova.length<6){ toast('A nova senha precisa de pelo menos 6 caracteres.'); return; }
   if(nova && nova!==$('#gNovaSenha2').value){ toast('As novas senhas não conferem.'); return; }

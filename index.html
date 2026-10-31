@@ -132,10 +132,10 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--lj);border-color
     <div class="card">
       <h2><span class="etapa">2</span>Foto da fita dos encerrantes (B2Click) — uma só para todos os bicos</h2>
       <div class="foto">
-        <label class="btn">📷 Tirar foto<input type="file" accept="image/*" capture="environment" id="fotoFita" hidden></label>
+        <label class="btn"><span class="lblFoto">📷 Tirar foto</span><input type="file" accept="image/*" capture="environment" id="fotoFita" hidden></label>
         <div id="prevFita" style="display:flex;gap:6px;flex-wrap:wrap"></div>
       </div>
-      <div class="dica">Obrigatória. Pode tirar mais de uma se a fita for longa.</div>
+      <div class="dica">Obrigatória. Pode tirar mais de uma se a fita for longa. <span class="dicaModoFoto"></span></div>
     </div>
     <div class="card" style="padding:10px 14px"><h2 style="margin:0"><span class="etapa">3</span>Encerrantes por bico</h2><div class="dica" id="dicaBicos"></div></div>
     <div id="bicos"></div>
@@ -232,6 +232,12 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--lj);border-color
           <div><label for="gDias">Dias para pendências</label><input type="number" id="gDias" min="1" max="60"></div>
         </div>
         <label class="chk"><input type="checkbox" id="gSoAlertas"> Enviar e-mail só quando houver alerta</label>
+        <label for="gFotoModo">Fotos da fita e dos relógios</label>
+        <select id="gFotoModo">
+          <option value="CAMERA">Só pela câmera, no ato do registro</option>
+          <option value="LIVRE">Câmera ou anexar arquivo/galeria do celular</option>
+        </select>
+        <div class="dica">Os anexos da etapa 4 (comanda, cupom, print) podem sempre vir do celular.</div>
       </div>
       <div class="card">
         <h2>Administrador / auditor</h2>
@@ -265,7 +271,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--lj);border-color
 <script>
 (function(){
 'use strict';
-const C = self.APP_CONFIG, VERSAO = '2.1';
+const C = self.APP_CONFIG, VERSAO = '2.2';
 const $ = s => document.querySelector(s);
 const ls = {
   get(k, d){ try{ const v = localStorage.getItem('enc_'+k); return v==null ? d : JSON.parse(v); }catch(e){ return d; } },
@@ -368,7 +374,8 @@ function montarFormulario(){
   $('#dicaTurno').textContent = ob.length ? 'Horários obrigatórios: ' + ob.join(', ') : '';
   montarBicos();
 }
-function montarBicos(){
+function montarBicos(){ montarBicos0(); aplicarModoFoto(); }
+function montarBicos0(){
   const ult = ultimas();
   const bs = (cfgPosto && cfgPosto.bicos) || [];
   const nOb = bs.filter(obrigatorio).length;
@@ -388,7 +395,7 @@ function montarBicos(){
       <label class="chk"><input type="checkbox" data-c="ilegivel"> Relógio ilegível / sem leitura</label>
       <div class="res" data-r>Preencha relógio e fita para calcular a sobra/falta.</div>
       <label class="${rq}">Foto do relógio (medidor) do bico ${esc(b.n)}</label>
-      <div class="foto"><label class="btn">📷 Foto do relógio<input type="file" accept="image/*" capture="environment" data-c="foto" hidden></label><span data-f></span></div>
+      <div class="foto"><label class="btn"><span class="lblFoto">📷 Foto do relógio</span><input type="file" accept="image/*" capture="environment" data-c="foto" hidden></label><span data-f></span></div>
       <div class="dica">Só o visor do relógio deste bico. A fita B2Click já foi fotografada na etapa 2.</div>
       <label>Observação do bico</label>
       <textarea data-c="obs" placeholder="Opcional"></textarea>
@@ -428,6 +435,7 @@ $('#bicos').addEventListener('input', e=>{
 });
 $('#bicos').addEventListener('change', async e=>{
   if(e.target.dataset.c!=='foto') return; const card = e.target.closest('[data-bico]'); const f = e.target.files[0]; if(!f) return;
+  if(!fotoNoAto(f)){ e.target.value=''; return; }
   const n = card.dataset.bico; card.querySelector('[data-f]').textContent = 'processando…';
   try{ const img = await prepararFoto(f, `${aparelho.posto} • Bico ${n} • ${dataBR($('#data').value)} ${turnoSel||''}`);
     estado(n).foto = img.dataUrl; estado(n).fotoHora = img.hora; card.querySelector('[data-f]').innerHTML = `<img src="${img.dataUrl}">`; salvarRascunho();
@@ -436,6 +444,7 @@ $('#bicos').addEventListener('change', async e=>{
 });
 $('#fotoFita').addEventListener('change', async e=>{
   const f = e.target.files[0]; if(!f) return;
+  if(!fotoNoAto(f)){ e.target.value=''; return; }
   try{ fotosFita.push(await prepararFoto(f, `${aparelho.posto} • Fita B2Click • ${dataBR($('#data').value)} ${turnoSel||''}`)); mostrarFita(); salvarRascunho(); }catch(err){ toast('Erro na foto, tente de novo.'); }
   e.target.value='';
 });
@@ -447,6 +456,24 @@ function mostrarAnexos(){ $('#prevAnexos').innerHTML = anexos.map((f,i)=>`<img s
 function mostrarFita(){ $('#prevFita').innerHTML = fotosFita.map((f,i)=>`<img src="${f.dataUrl}" data-i="${i}" title="Toque para remover">`).join(''); }
 $('#prevAnexos').addEventListener('click', e=>{ const i=e.target.dataset.i; if(i==null) return; if(confirm('Remover este anexo?')){ anexos.splice(+i,1); mostrarAnexos(); salvarRascunho(); } });
 $('#prevFita').addEventListener('click', e=>{ const i=e.target.dataset.i; if(i==null) return; if(confirm('Remover esta foto?')){ fotosFita.splice(+i,1); mostrarFita(); salvarRascunho(); } });
+
+// ---- modo das fotos (definido pelo administrador) ----
+function modoFoto(){ return (cfgPosto && cfgPosto.fotoModo === 'LIVRE') ? 'LIVRE' : 'CAMERA'; }
+function fotoNoAto(f){ // no modo CAMERA recusa foto antiga (galeria)
+  if(modoFoto()!=='CAMERA' || !f.lastModified) return true;
+  if(Date.now() - f.lastModified > 15*60*1000){ toast('Foto antiga recusada: o administrador definiu que a foto deve ser tirada agora, pela câmera.', 6000); return false; }
+  return true;
+}
+function aplicarModoFoto(){
+  const livre = modoFoto()==='LIVRE';
+  document.querySelectorAll('#fotoFita, #bicos input[data-c=foto]').forEach(i=>{
+    if(livre) i.removeAttribute('capture'); else i.setAttribute('capture','environment');
+    const l = i.parentElement.querySelector('.lblFoto'); if(!l) return;
+    if(!l.dataset.orig) l.dataset.orig = l.textContent;
+    l.textContent = livre ? l.dataset.orig.replace('Tirar foto','Tirar foto ou anexar').replace('Foto do relógio','Foto do relógio (câmera ou arquivo)') : l.dataset.orig;
+  });
+  document.querySelectorAll('.dicaModoFoto').forEach(d=> d.textContent = livre ? 'Pode tirar a foto agora ou escolher uma do celular.' : 'A foto deve ser tirada na hora, pela câmera.');
+}
 
 function prepararFoto(file, carimbo){
   return new Promise((res, rej)=>{
@@ -599,7 +626,7 @@ $('#btnAdmEntrar').onclick = async () => {
 function abrirPainel(){
   $('#admLogin').classList.add('oculto'); $('#admPainel').classList.remove('oculto');
   const g = adm.geral||{};
-  $('#gEmailAud').value = g.EMAIL_AUDITORIA||''; $('#gTol').value = g.TOLERANCIA_LITROS||5; $('#gDias').value = g.DIAS_PENDENCIA||7; $('#gSoAlertas').checked = /^s/i.test(g.EMAIL_SO_ALERTAS||''); $('#gNovaSenha').value=''; $('#gNovaSenha2').value=''; $('#gEmailAdm').value=''; $('#gEmailAdmAtual').textContent = admEmail||'—';
+  $('#gEmailAud').value = g.EMAIL_AUDITORIA||''; $('#gTol').value = g.TOLERANCIA_LITROS||5; $('#gDias').value = g.DIAS_PENDENCIA||7; $('#gSoAlertas').checked = /^s/i.test(g.EMAIL_SO_ALERTAS||''); $('#gFotoModo').value = g.FOTO_MODO==='LIVRE'?'LIVRE':'CAMERA'; $('#gNovaSenha').value=''; $('#gNovaSenha2').value=''; $('#gEmailAdm').value=''; $('#gEmailAdmAtual').textContent = admEmail||'—';
   montarAdmSel(); montarAdmPosto(); $('#admStatus').textContent='';
 }
 function sairAdmin(){ adm=null; admSenha=''; $('#admPainel').classList.add('oculto'); $('#admLogin').classList.remove('oculto'); }
@@ -676,13 +703,13 @@ $('#admPosto').addEventListener('click', e=>{
   if(t.id==='addB'){ const ins=$('#admPosto').querySelectorAll('[data-bf="n"]'); if(ins.length) ins[ins.length-1].focus(); }
 });
 $('#admPosto').addEventListener('keydown', e=>{ if(e.key==='Enter' && (e.target.id==='novoH'||e.target.id==='novoL')){ e.preventDefault(); $(e.target.id==='novoH'?'#addH':'#addL').click(); } });
-['#gEmailAud','#gTol','#gDias','#gSoAlertas','#gNovaSenha','#gNovaSenha2','#gEmailAdm'].forEach(s=>$(s).addEventListener('input', sujo));
+['#gEmailAud','#gTol','#gDias','#gSoAlertas','#gFotoModo','#gNovaSenha','#gNovaSenha2','#gEmailAdm'].forEach(s=>$(s).addEventListener('input', sujo));
 $('#btnAdmSalvar').onclick = async () => {
   for(const p of adm.postos){
     if(!String(p.posto||'').trim()){ toast('Há posto sem nome.'); return; }
     const vistos={}; for(const b of (p.bicos||[])){ const n=String(b.n||'').trim(); if(!n){ toast('Bico sem número no posto '+p.posto+'.'); return; } if(vistos[n]){ toast('Bico '+n+' repetido no posto '+p.posto+'.'); return; } vistos[n]=1; }
   }
-  adm.geral = { EMAIL_AUDITORIA:$('#gEmailAud').value, TOLERANCIA_LITROS:Number($('#gTol').value)||5, DIAS_PENDENCIA:Number($('#gDias').value)||7, EMAIL_SO_ALERTAS:$('#gSoAlertas').checked?'SIM':'NÃO' };
+  adm.geral = { EMAIL_AUDITORIA:$('#gEmailAud').value, TOLERANCIA_LITROS:Number($('#gTol').value)||5, DIAS_PENDENCIA:Number($('#gDias').value)||7, EMAIL_SO_ALERTAS:$('#gSoAlertas').checked?'SIM':'NÃO', FOTO_MODO:$('#gFotoModo').value };
   const nova = $('#gNovaSenha').value, novoEmail = $('#gEmailAdm').value.trim();
   if(nova && nova.length<6){ toast('A nova senha precisa de pelo menos 6 caracteres.'); return; }
   if(nova && nova!==$('#gNovaSenha2').value){ toast('As novas senhas não conferem.'); return; }
@@ -720,6 +747,7 @@ window.addEventListener('beforeunload', e=>{ if(adm && admSujo){ e.preventDefaul
 $('#sobre').innerHTML = 'Versão ' + VERSAO + ' · Servidor: ' + (servidorOk() ? 'configurado' : '<b style="color:var(--err)">NÃO configurado</b>') + '<br>Instale pelo menu do navegador: “Adicionar à tela inicial”.<br>Dúvidas: apoio.escada@pichilau.com.br';
 carregarRascunho(); montarTudo(); atualizarLista();
 trocarTela(/^#admin/i.test(location.hash) ? 'admin' : (logado() ? 'registro' : 'login'));
+window.addEventListener('hashchange', ()=>{ if(/^#admin/i.test(location.hash)) trocarTela('admin'); });
 atualizarPosto(); sincronizar(); carregarPostos();
 if(navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(()=>{});
 })();

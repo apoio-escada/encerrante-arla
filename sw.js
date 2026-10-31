@@ -1,5 +1,5 @@
 // Service worker: deixa o app abrir sem internet e envia a fila quando o sinal volta.
-const CACHE = 'encerrante-arla-v5';
+const CACHE = 'encerrante-arla-v6';
 const ARQUIVOS = ['./', './index.html', './config.js', './sync.js', './manifest.webmanifest', './icon-192.png', './icon-512.png', './posto.jpg', './logo-icone.png', './logo-pichilau.jpg'];
 
 importScripts('./config.js', './sync.js');

@@ -200,6 +200,22 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--lj);border-color
       <input type="password" id="admSenha" autocomplete="current-password">
       <div style="margin-top:14px"><button class="btn pri" id="btnAdmEntrar">Entrar</button></div>
       <div class="dica" style="margin-top:8px">Precisa de internet. A senha não fica salva no aparelho.</div>
+      <div style="margin-top:12px"><button class="btn peq" id="btnEsqueci" type="button">🔑 Esqueci a senha</button></div>
+      <div id="admRecup" class="oculto" style="margin-top:12px;border-top:1px solid #ddd;padding-top:12px">
+        <h3>Redefinir senha</h3>
+        <div class="dica">Um código será enviado para o e-mail do administrador cadastrado.</div>
+        <div style="margin-top:8px"><button class="btn" id="btnEnviarCod" type="button">📧 Enviar código por e-mail</button></div>
+        <div id="admRecup2" class="oculto">
+          <div class="dica" id="recPara" style="margin-top:8px"></div>
+          <label class="req" for="recCod">Código recebido (6 números)</label>
+          <input id="recCod" inputmode="numeric" maxlength="6" autocomplete="one-time-code">
+          <label class="req" for="recNova">Nova senha (mínimo 6 caracteres)</label>
+          <input type="password" id="recNova" autocomplete="new-password">
+          <label class="req" for="recNova2">Repita a nova senha</label>
+          <input type="password" id="recNova2" autocomplete="new-password">
+          <div style="margin-top:12px"><button class="btn pri" id="btnRedefinir" type="button">Redefinir senha</button></div>
+        </div>
+      </div>
     </div>
     <div id="admPainel" class="oculto">
       <div class="card">
@@ -216,8 +232,15 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--lj);border-color
           <div><label for="gDias">Dias para pendências</label><input type="number" id="gDias" min="1" max="60"></div>
         </div>
         <label class="chk"><input type="checkbox" id="gSoAlertas"> Enviar e-mail só quando houver alerta</label>
+      </div>
+      <div class="card">
+        <h2>Administrador / auditor</h2>
+        <div class="dica">E-mail atual do administrador: <b id="gEmailAdmAtual">—</b><br>Recebe o código do "Esqueci a senha" e os avisos de troca de senha.</div>
+        <label for="gEmailAdm">Novo e-mail do administrador (ex.: TI assumir o app)</label>
+        <input type="email" id="gEmailAdm" placeholder="deixe vazio para manter" autocomplete="off">
         <h3>Trocar senha do administrador</h3>
-        <input type="password" id="gNovaSenha" placeholder="Nova senha (deixe vazio para manter)" autocomplete="new-password">
+        <input type="password" id="gNovaSenha" placeholder="Nova senha (mín. 6) — vazio para manter" autocomplete="new-password">
+        <input type="password" id="gNovaSenha2" placeholder="Repita a nova senha" autocomplete="new-password" style="margin-top:8px">
       </div>
       <div class="adm-bar"><button class="btn pri" id="btnAdmSalvar">💾 Salvar alterações</button>
         <div style="display:flex;justify-content:space-between;margin-top:8px"><span class="dica" id="admStatus"></span><button class="btn peq" id="btnAdmSair">Sair</button></div></div>
@@ -242,7 +265,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--lj);border-color
 <script>
 (function(){
 'use strict';
-const C = self.APP_CONFIG, VERSAO = '2.0';
+const C = self.APP_CONFIG, VERSAO = '2.1';
 const $ = s => document.querySelector(s);
 const ls = {
   get(k, d){ try{ const v = localStorage.getItem('enc_'+k); return v==null ? d : JSON.parse(v); }catch(e){ return d; } },
@@ -544,19 +567,39 @@ $('#btnPtAtualizar').onclick = () => atualizarPosto(true);
 $('#btnPtTrocar').onclick = () => trocarTela('login');
 
 // ================= ADMIN =================
-let adm = null, admSenha = '', admSel = 0;
+let adm = null, admSenha = '', admSel = 0, admEmail = '';
+$('#btnEsqueci').onclick = () => $('#admRecup').classList.toggle('oculto');
+$('#btnEnviarCod').onclick = async () => {
+  if(!navigator.onLine){ toast('Precisa de internet.'); return; }
+  $('#btnEnviarCod').disabled = true;
+  try{ const j = await api({action:'adminEsqueci'}); if(!j.ok){ toast(j.erro||'Não foi possível enviar.', 6000); if(/acabou de ser enviado/.test(j.erro||'')) $('#admRecup2').classList.remove('oculto'); return; }
+    $('#recPara').textContent = 'Código enviado para ' + j.para + '. Confira também o lixo eletrônico. Vale 30 minutos.';
+    $('#admRecup2').classList.remove('oculto'); $('#recCod').focus(); toast('Código enviado por e-mail.', 4000);
+  }catch(e){ toast('Falha de conexão.'); } finally{ setTimeout(()=>$('#btnEnviarCod').disabled=false, 3000); }
+};
+$('#btnRedefinir').onclick = async () => {
+  const cod = $('#recCod').value.trim(), n1 = $('#recNova').value, n2 = $('#recNova2').value;
+  if(!/^\d{6}$/.test(cod)){ toast('Digite o código de 6 números.'); return; }
+  if(n1.length<6){ toast('A nova senha precisa de pelo menos 6 caracteres.'); return; }
+  if(n1!==n2){ toast('As senhas não conferem.'); return; }
+  $('#btnRedefinir').disabled = true;
+  try{ const j = await api({action:'adminRedefinir', codigo:cod, novaSenha:n1}); if(!j.ok){ toast(j.erro||'Erro.', 6000); return; }
+    ['#recCod','#recNova','#recNova2'].forEach(x=>$(x).value=''); $('#admRecup2').classList.add('oculto'); $('#admRecup').classList.add('oculto');
+    toast('Senha redefinida ✔ Entre com a nova senha.', 5000); $('#admSenha').focus();
+  }catch(e){ toast('Falha de conexão.'); } finally{ $('#btnRedefinir').disabled = false; }
+};
 $('#btnAdmEntrar').onclick = async () => {
   const s = $('#admSenha').value; if(!s){ toast('Digite a senha.'); return; }
   if(!navigator.onLine){ toast('Precisa de internet.'); return; }
   $('#btnAdmEntrar').disabled = true;
   try{ const j = await api({action:'adminLogin', senha:s}); if(!j.ok){ toast(j.erro||'Senha incorreta.', 5000); return; }
-    admSenha = s; adm = j.config; $('#admSenha').value=''; admSel = Math.max(0, adm.postos.findIndex(p=>aparelho&&p.posto===aparelho.posto)); abrirPainel();
+    admSenha = s; adm = j.config; admEmail = j.emailAdmin||''; $('#admSenha').value=''; admSel = Math.max(0, adm.postos.findIndex(p=>aparelho&&p.posto===aparelho.posto)); abrirPainel();
   }catch(e){ toast('Falha de conexão.'); } finally{ $('#btnAdmEntrar').disabled = false; }
 };
 function abrirPainel(){
   $('#admLogin').classList.add('oculto'); $('#admPainel').classList.remove('oculto');
   const g = adm.geral||{};
-  $('#gEmailAud').value = g.EMAIL_AUDITORIA||''; $('#gTol').value = g.TOLERANCIA_LITROS||5; $('#gDias').value = g.DIAS_PENDENCIA||7; $('#gSoAlertas').checked = /^s/i.test(g.EMAIL_SO_ALERTAS||''); $('#gNovaSenha').value='';
+  $('#gEmailAud').value = g.EMAIL_AUDITORIA||''; $('#gTol').value = g.TOLERANCIA_LITROS||5; $('#gDias').value = g.DIAS_PENDENCIA||7; $('#gSoAlertas').checked = /^s/i.test(g.EMAIL_SO_ALERTAS||''); $('#gNovaSenha').value=''; $('#gNovaSenha2').value=''; $('#gEmailAdm').value=''; $('#gEmailAdmAtual').textContent = admEmail||'—';
   montarAdmSel(); montarAdmPosto(); $('#admStatus').textContent='';
 }
 function sairAdmin(){ adm=null; admSenha=''; $('#admPainel').classList.add('oculto'); $('#admLogin').classList.remove('oculto'); }
@@ -633,21 +676,24 @@ $('#admPosto').addEventListener('click', e=>{
   if(t.id==='addB'){ const ins=$('#admPosto').querySelectorAll('[data-bf="n"]'); if(ins.length) ins[ins.length-1].focus(); }
 });
 $('#admPosto').addEventListener('keydown', e=>{ if(e.key==='Enter' && (e.target.id==='novoH'||e.target.id==='novoL')){ e.preventDefault(); $(e.target.id==='novoH'?'#addH':'#addL').click(); } });
-['#gEmailAud','#gTol','#gDias','#gSoAlertas','#gNovaSenha'].forEach(s=>$(s).addEventListener('input', sujo));
+['#gEmailAud','#gTol','#gDias','#gSoAlertas','#gNovaSenha','#gNovaSenha2','#gEmailAdm'].forEach(s=>$(s).addEventListener('input', sujo));
 $('#btnAdmSalvar').onclick = async () => {
   for(const p of adm.postos){
     if(!String(p.posto||'').trim()){ toast('Há posto sem nome.'); return; }
     const vistos={}; for(const b of (p.bicos||[])){ const n=String(b.n||'').trim(); if(!n){ toast('Bico sem número no posto '+p.posto+'.'); return; } if(vistos[n]){ toast('Bico '+n+' repetido no posto '+p.posto+'.'); return; } vistos[n]=1; }
   }
   adm.geral = { EMAIL_AUDITORIA:$('#gEmailAud').value, TOLERANCIA_LITROS:Number($('#gTol').value)||5, DIAS_PENDENCIA:Number($('#gDias').value)||7, EMAIL_SO_ALERTAS:$('#gSoAlertas').checked?'SIM':'NÃO' };
-  const nova = $('#gNovaSenha').value;
-  if(nova && nova.length<4){ toast('A nova senha precisa de pelo menos 4 caracteres.'); return; }
+  const nova = $('#gNovaSenha').value, novoEmail = $('#gEmailAdm').value.trim();
+  if(nova && nova.length<6){ toast('A nova senha precisa de pelo menos 6 caracteres.'); return; }
+  if(nova && nova!==$('#gNovaSenha2').value){ toast('As novas senhas não conferem.'); return; }
+  if(novoEmail && !/^[^@\s,;]+@[^@\s,;]+\.[^@\s,;]+$/.test(novoEmail)){ toast('E-mail do administrador inválido.'); return; }
+  if(novoEmail && novoEmail.toLowerCase()!==admEmail && !confirm('Trocar o e-mail do administrador para '+novoEmail+'?\nA recuperação de senha passará a ir para esse e-mail.')) return;
   $('#btnAdmSalvar').disabled = true; $('#admStatus').textContent = 'Salvando…';
   try{
-    const j = await api({action:'adminSalvar', senha:admSenha, config:adm, novaSenha:nova||undefined});
+    const j = await api({action:'adminSalvar', senha:admSenha, config:adm, novaSenha:nova||undefined, novoEmailAdmin:novoEmail||undefined});
     if(!j.ok){ toast(j.erro||'Erro ao salvar.', 6000); $('#admStatus').textContent='Erro: '+(j.erro||''); return; }
     if(j.senhaAlterada) admSenha = nova;
-    adm = j.config; admSujo=false; abrirPainel(); $('#admStatus').textContent = 'Salvo ✔ ' + new Date().toLocaleTimeString('pt-BR');
+    adm = j.config; admEmail = j.emailAdmin||admEmail; admSujo=false; abrirPainel(); $('#admStatus').textContent = 'Salvo ✔ ' + new Date().toLocaleTimeString('pt-BR');
     toast('Configuração salva. Os aparelhos recebem ao abrir o app com internet.', 5000);
     atualizarPosto(); carregarPostos();
   }catch(e){ toast('Falha de conexão. Nada foi salvo.'); $('#admStatus').textContent='Não salvo'; }
@@ -673,7 +719,7 @@ window.addEventListener('beforeunload', e=>{ if(adm && admSujo){ e.preventDefaul
 // ================= INÍCIO =================
 $('#sobre').innerHTML = 'Versão ' + VERSAO + ' · Servidor: ' + (servidorOk() ? 'configurado' : '<b style="color:var(--err)">NÃO configurado</b>') + '<br>Instale pelo menu do navegador: “Adicionar à tela inicial”.<br>Dúvidas: apoio.escada@pichilau.com.br';
 carregarRascunho(); montarTudo(); atualizarLista();
-trocarTela(logado() ? 'registro' : 'login');
+trocarTela(/^#admin/i.test(location.hash) ? 'admin' : (logado() ? 'registro' : 'login'));
 atualizarPosto(); sincronizar(); carregarPostos();
 if(navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(()=>{});
 })();
